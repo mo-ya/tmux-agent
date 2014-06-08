@@ -1,0 +1,3 @@
+session: 
+  window-command: ssh $window
+  window: $argv
