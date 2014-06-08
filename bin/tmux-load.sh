@@ -5,9 +5,15 @@
 ## License: MIT License  (See LICENSE.md)
 ##
 ########################################
-## Settings
+## Settings (Please modify for your environment)
 ########################################
 TMUX_YAML_PATH="${HOME}/.tmux-load-conf"
+
+
+
+########################################
+## Main Routine, etc.
+########################################
 
 ##### Functions #####
 reset_files(){
@@ -49,6 +55,12 @@ if [ ! -r "${load_file}" ]; then
     exit 1
 fi
 
+shift
+argv=
+for i in $*;do
+    argv="$argv $i"
+done
+
 test -d $tmpd || mkdir $tmpd
 reset_files ${tmp_files}
 
@@ -68,7 +80,7 @@ cat ${load_file_tmp} | while read line; do
     
     case "$line" in
         session:*) 
-            session=$(echo $line | awk -F: '{print $2}')
+            session=$(echo $line | awk -F: '{print $2}' | sed "s/\$argv/$argv/g")
             if [ -z "$session" ]; then
                 cnt=0
                 dup=1
@@ -107,7 +119,7 @@ cat ${load_file_tmp} | while read line; do
                 exit 1
             fi
             
-            windows="$(echo $line | sed 's/^window: *//g')"
+            windows="$(echo $line | sed 's/^window: *//g' | sed "s/\$argv/$argv/g")"
             if [ -z "$windows" ]; then
                 windows="$session"
             fi
@@ -142,9 +154,12 @@ cat ${load_file_tmp} | while read line; do
             echo $pane_layout >> $pane_layout_file
             ;;
         pane:*)
-            panes="$(echo $line | sed 's/^pane: *//g')"
+            panes="$(echo $line | sed 's/^pane: *//g' | sed "s/\$argv/$argv/g")"
             echo $pane > $pane_file
             windows=$(cat $window_file)
+            if [ -z "$windows" ]; then
+                windows="$session"
+            fi
 
             pane_layout=$(cat ${pane_layout_file})
             if [ -z "$pane_layout" ]; then
