@@ -182,7 +182,7 @@ cat ${load_file_tmp} | while read line; do
                         window_1st=
                     else
                         tmux split-window
-                        tmux select-layout -t $window $pane_layout >/dev/null 2>&1
+                        tmux select-layout -t $window $pane_layout >/dev/null
                     fi
                     cat ${pane_cmd_file} | while read cmd; do
                         tmux send-keys "eval $(echo ${cmd} | sed "s/\$pane/$pane/g" | sed "s/\$window/$window/g" )" C-m
@@ -191,7 +191,7 @@ cat ${load_file_tmp} | while read line; do
                 
                 pane_sync=$(cat ${pane_sync_file})
                 if [ -n "$pane_sync" ]; then
-                    tmux set-window-option synchronize-panes on >/dev/null 2>&1
+                    tmux set-window-option synchronize-panes on >/dev/null
                 fi
                 window_1st=1
             done
