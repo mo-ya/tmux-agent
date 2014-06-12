@@ -29,13 +29,14 @@ load_file_tmp="${tmpd}/load_file"
 err_file="${tmpd}/error"
 session_file="${tmpd}/session"
 window_file="${tmpd}/window"
+window_anon_cnt_file="${tmpd}/window_anon_cnt"
 pane_file="${tmpd}/pane"
 pane_sync_file="${tmpd}/pane-sync"
 pane_layout_file="${tmpd}/pane-layout"
 window_cmd_file="${tmpd}/window-command"
 pane_cmd_file="${tmpd}/pane-command"
 
-tmp_files="${load_file_tmp} ${err_file} ${session_file} ${window_file} ${pane_file} ${pane_sync_file} ${pane_layout_file} ${window_cmd_file} ${pane_cmd_file}"
+tmp_files="${load_file_tmp} ${err_file} ${session_file} ${window_file} ${window_anon_cnt_file} ${pane_file} ${pane_sync_file} ${pane_layout_file} ${window_cmd_file} ${pane_cmd_file}"
 
 ##### Main Routine #####
 
@@ -97,7 +98,8 @@ cat ${load_file_tmp} | while read line; do
             fi
             
             echo $session > $session_file
-            
+            echo "0" > $window_anon_cnt_file
+
             tmux has-session -t $session > /dev/null 2>&1
             if [ $? -eq 0 ];then
                 break
@@ -121,7 +123,9 @@ cat ${load_file_tmp} | while read line; do
             
             windows="$(echo $line | sed 's/^window: *//g' | sed "s/\$argv/$argv/g")"
             if [ -z "$windows" ]; then
-                windows="$session"
+                window_anon_cnt=$(cat $window_anon_cnt_file)
+                windows="${session}_${window_anon_cnt}"
+                expr $window_anon_cnt + 1 > $window_anon_cnt_file
             fi
 
             echo $windows > $window_file
