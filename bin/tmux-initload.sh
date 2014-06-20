@@ -7,7 +7,7 @@
 ########################################
 ## Settings (Please modify for your environment)
 ########################################
-TMUX_YAML_PATH="${HOME}/.tmux-load-conf"
+TMUX_YAML_PATH="${HOME}/.tmux-initload-conf"
 
 
 
