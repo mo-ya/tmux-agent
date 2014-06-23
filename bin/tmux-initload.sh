@@ -42,18 +42,26 @@ tmp_files="${load_file_tmp} ${err_file} ${session_file} ${window_file} ${window_
 
 if [ -z "$1" ]; then
     echo 
-    echo "  Usage: ./$(basename $0) file"
+    echo "  Usage: ./$(basename $0) <file|session>"
     echo
     exit 1
 fi
 
-load_file="${TMUX_YAML_PATH}/$1"
+conf_file=$1
+load_file="${TMUX_YAML_PATH}/$conf_file"
 
 if [ ! -r "${load_file}" ]; then
-    echo 
-    echo "  ERROR:  \"${load_file}\" is not found or not readable."
-    echo
-    exit 1
+    tmux has-session -t $conf_file > /dev/null 2>&1
+    if [ $? -ne 0 ];then
+        echo 
+        echo "  ERROR:  \"${load_file}\" is not readable, "
+        echo "          and session \"$conf_file\" not found."
+        echo
+        exit 1
+    else
+        tmux attach-session -t $conf_file
+        exit 0
+    fi
 fi
 
 shift
