@@ -1,4 +1,4 @@
 session: 
-  pane-command: ssh $pane
+  pane-command: ssh ${pane}
   pane-sync:
-  pane: $argv
+  pane: ${argv}

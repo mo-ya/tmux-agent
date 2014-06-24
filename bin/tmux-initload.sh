@@ -89,7 +89,7 @@ cat ${load_file_tmp} | while read line; do
     
     case "$line" in
         session:*) 
-            session=$(echo $line | awk -F: '{print $2}' | sed "s/\$argv/$argv/g")
+            session=$(echo $line | awk -F: '{print $2}' | sed "s/\${argv}/$argv/g")
             if [ -z "$session" ]; then
                 cnt=0
                 dup=1
@@ -129,7 +129,7 @@ cat ${load_file_tmp} | while read line; do
                 exit 1
             fi
             
-            windows="$(echo $line | sed 's/^window: *//g' | sed "s/\$argv/$argv/g")"
+            windows="$(echo $line | sed 's/^window: *//g' | sed "s/\${argv}/$argv/g")"
             if [ -z "$windows" ]; then
                 window_anon_cnt=$(cat $window_anon_cnt_file)
                 windows="${session}_${window_anon_cnt}"
@@ -146,7 +146,7 @@ cat ${load_file_tmp} | while read line; do
                     tmux new-session -d -n $window -s $session
                 fi
                 cat ${window_cmd_file} | while read cmd; do
-                    tmux send-keys "eval $(echo ${cmd} | sed "s/\$window/$window/g")" C-m
+                    tmux send-keys "eval $(echo ${cmd} | sed "s/\${window}/$window/g")" C-m
                 done
             done
             reset_files ${window_cmd_file}
@@ -166,7 +166,7 @@ cat ${load_file_tmp} | while read line; do
             echo $pane_layout >> $pane_layout_file
             ;;
         pane:*)
-            panes="$(echo $line | sed 's/^pane: *//g' | sed "s/\$argv/$argv/g")"
+            panes="$(echo $line | sed 's/^pane: *//g' | sed "s/\${argv}/$argv/g")"
             echo $pane > $pane_file
             windows=$(cat $window_file)
             if [ -z "$windows" ]; then
@@ -197,7 +197,7 @@ cat ${load_file_tmp} | while read line; do
                         tmux select-layout -t $window $pane_layout >/dev/null
                     fi
                     cat ${pane_cmd_file} | while read cmd; do
-                        tmux send-keys "eval $(echo ${cmd} | sed "s/\$pane/$pane/g" | sed "s/\$window/$window/g" )" C-m
+                        tmux send-keys "eval $(echo ${cmd} | sed "s/\${pane}/$pane/g" | sed "s/\${window}/$window/g" )" C-m
                     done
                 done
                 
