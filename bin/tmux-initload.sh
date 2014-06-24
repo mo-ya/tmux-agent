@@ -22,6 +22,17 @@ reset_files(){
     done
 }
 
+tmux_session_exist(){
+    session_name=$1
+    tmux new-session -d -s $session_name 2>/dev/null
+    if [ $? -eq 0 ]; then
+        tmux kill-session -t $session_name
+        return 1
+    else
+        return 0
+    fi
+}
+
 ##### Internal Settings #####
 tmpd="/tmp/tmux-load.$$"
 
@@ -51,8 +62,8 @@ conf_file=$1
 load_file="${TMUX_YAML_PATH}/$conf_file"
 
 if [ ! -r "${load_file}" ]; then
-    tmux has-session -t $conf_file > /dev/null 2>&1
-    if [ $? -ne 0 ];then
+    tmux_session_exist $conf_file
+    if [ $? -ne 0 ]; then
         echo 
         echo "  ERROR:  \"${load_file}\" is not readable, "
         echo "          and session \"$conf_file\" not found."
@@ -65,10 +76,7 @@ if [ ! -r "${load_file}" ]; then
 fi
 
 shift
-argv=
-for i in $*;do
-    argv="$argv $i"
-done
+argv="$*"
 
 test -d $tmpd || mkdir $tmpd
 reset_files ${tmp_files}
@@ -89,14 +97,15 @@ cat ${load_file_tmp} | while read line; do
     
     case "$line" in
         session:*) 
-            session=$(echo $line | awk -F: '{print $2}' | sed "s/\${argv}/$argv/g")
+            session=$( echo $line | awk -F: '{print $2}' | sed "s/\${argv}/$argv/g" | sed "s/\${file}/$conf_file/g"  | sed "s/^[ ]*//g" | sed "s/[ ]*$//g" | tr -s " " | sed "s/[. ]/_/g" )
+
             if [ -z "$session" ]; then
                 cnt=0
                 dup=1
 
                 while [ -n "$dup" ]; do
                     session="anon${cnt}"
-                    tmux has-session -t $session > /dev/null 2>&1
+                    tmux_session_exist $session
                     if [ $? -ne 0 ];then
                         dup=
                         break
@@ -108,7 +117,7 @@ cat ${load_file_tmp} | while read line; do
             echo $session > $session_file
             echo "0" > $window_anon_cnt_file
 
-            tmux has-session -t $session > /dev/null 2>&1
+            tmux_session_exist $session
             if [ $? -eq 0 ];then
                 break
             fi
@@ -129,7 +138,7 @@ cat ${load_file_tmp} | while read line; do
                 exit 1
             fi
             
-            windows="$(echo $line | sed 's/^window: *//g' | sed "s/\${argv}/$argv/g")"
+            windows="$(echo $line | sed 's/^window: *//g' | sed "s/\${argv}/$argv/g" | sed "s/\${file}/$conf_file/g" )"
             if [ -z "$windows" ]; then
                 window_anon_cnt=$(cat $window_anon_cnt_file)
                 windows="${session}_${window_anon_cnt}"
@@ -139,14 +148,14 @@ cat ${load_file_tmp} | while read line; do
             echo $windows > $window_file
 
             for window in $(eval echo $windows); do
-                tmux has-session -t $session > /dev/null 2>&1
+                tmux_session_exist $session
                 if [ $? -eq 0 ];then
                     tmux new-window -n $window
                 else
                     tmux new-session -d -n $window -s $session
                 fi
                 cat ${window_cmd_file} | while read cmd; do
-                    tmux send-keys "eval $(echo ${cmd} | sed "s/\${window}/$window/g")" C-m
+                    tmux send-keys "eval $(echo ${cmd} | sed "s/\${window}/$window/g" | sed "s/\${file}/$conf_file/g" )" C-m
                 done
             done
             reset_files ${window_cmd_file}
@@ -166,7 +175,7 @@ cat ${load_file_tmp} | while read line; do
             echo $pane_layout >> $pane_layout_file
             ;;
         pane:*)
-            panes="$(echo $line | sed 's/^pane: *//g' | sed "s/\${argv}/$argv/g")"
+            panes="$(echo $line | sed 's/^pane: *//g' | sed "s/\${argv}/$argv/g" | sed "s/\${file}/$conf_file/g" )"
             echo $pane > $pane_file
             windows=$(cat $window_file)
             if [ -z "$windows" ]; then
@@ -181,7 +190,7 @@ cat ${load_file_tmp} | while read line; do
             
             for window in $windows; do
 
-                tmux has-session -t $session > /dev/null 2>&1
+                tmux_session_exist $session
                 if [ $? -ne 0 ];then
                     tmux new-session -d -n $session -s $session
                     window_1st=1
@@ -197,7 +206,7 @@ cat ${load_file_tmp} | while read line; do
                         tmux select-layout -t $window $pane_layout >/dev/null
                     fi
                     cat ${pane_cmd_file} | while read cmd; do
-                        tmux send-keys "eval $(echo ${cmd} | sed "s/\${pane}/$pane/g" | sed "s/\${window}/$window/g" )" C-m
+                        tmux send-keys "eval $(echo ${cmd} | sed "s/\${pane}/$pane/g" | sed "s/\${window}/$window/g" | sed "s/\${file}/$conf_file/g" )" C-m
                     done
                 done
                 
@@ -224,8 +233,8 @@ done
 err=$(cat ${err_file})
 session=$(cat $session_file)
 
-tmux has-session -t $session > /dev/null 2>&1
-if [ $? -ne 0 ];then
+tmux_session_exist $session
+if [ $? -ne 0 ]; then
     tmux new-session -d -n $session -s $session
 fi
 
