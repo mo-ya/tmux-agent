@@ -1,4 +1,4 @@
-session: ${file}_${argv}
+session: ${file}${id}_${argv}
   pane-command: ssh ${pane}
   pane-sync:
   pane: ${argv}
