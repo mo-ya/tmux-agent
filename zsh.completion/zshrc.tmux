@@ -14,12 +14,12 @@ function _tmux-initload {
         _describe "Initial Actions Config File: $_conf" _conf
     done
     
-    _attacheds=( $(tmux ls | awk -F: '/(attached)/ {print $1}' | sed -e "s/$/\:attached/g") )
+    _attacheds=( $(tmux ls 2>/dev/null | awk -F: '/(attached)/ {print $1}' | sed -e "s/$/\:attached/g") )
     for _attached in $_attacheds; do
         _describe "Attached Session: $_attached" _attached
     done
     
-    _detacheds=( $(tmux ls | awk -F: '!/(attached)/ {print $1}' | sed -e "s/$/\:detached/g") )
+    _detacheds=( $(tmux ls 2>/dev/null | awk -F: '!/(attached)/ {print $1}' | sed -e "s/$/\:detached/g") )
     for _detached in $_detacheds; do
         _describe "Detached Session: $_detached" _detached
     done
