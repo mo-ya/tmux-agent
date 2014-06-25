@@ -228,6 +228,7 @@ cat ${load_file_tmp} | while read line; do
                     if [ -n "$window_1st" ]; then
                         window_1st=
                     else
+                        tmux select-layout -t $window tiled >/dev/null
                         tmux split-window
                         tmux select-layout -t $window $pane_layout >/dev/null
                     fi
