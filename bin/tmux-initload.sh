@@ -33,6 +33,22 @@ tmux_session_exist(){
     fi
 }
 
+set_status_left_length(){
+
+    session=$1
+
+    status_left=$( tmux show-options -g status-left | awk '{print $2}' | sed -e 's/\#\[[^]]*\]//g' | sed -e 's/\"//g' )
+
+    if [[ "$status_left" =~ ^#S ]]; then
+        status_left_length=$( cat ${status_left_length_file} )
+        default_status_left_length=$( tmux show-options -g status-left-length 2>/dev/null | awk '{print $2}' )
+        if [ $status_left_length -gt $default_status_left_length ]; then
+            tmux set-option -t $session status-left-length $status_left_length >/dev/null
+        fi
+    fi
+
+}
+
 ##### Internal Settings #####
 tmpd="/tmp/tmux-load.$$"
 
@@ -46,8 +62,9 @@ pane_sync_file="${tmpd}/pane-sync"
 pane_layout_file="${tmpd}/pane-layout"
 window_cmd_file="${tmpd}/window-command"
 pane_cmd_file="${tmpd}/pane-command"
+status_left_length_file="${tmpd}/status-left-length"
 
-tmp_files="${load_file_tmp} ${err_file} ${session_file} ${window_file} ${window_anon_cnt_file} ${pane_file} ${pane_sync_file} ${pane_layout_file} ${window_cmd_file} ${pane_cmd_file}"
+tmp_files="${load_file_tmp} ${err_file} ${session_file} ${window_file} ${window_anon_cnt_file} ${pane_file} ${pane_sync_file} ${pane_layout_file} ${window_cmd_file} ${pane_cmd_file} ${status_left_length_file}"
 
 ##### Main Routine #####
 
@@ -84,6 +101,8 @@ reset_files ${tmp_files}
 cat ${load_file} > ${load_file_tmp}
 echo "" >> ${load_file_tmp}
 
+echo 0 > ${status_left_length_file}
+
 window_1st=1
 cat ${load_file_tmp} | while read line; do
 
@@ -98,22 +117,27 @@ cat ${load_file_tmp} | while read line; do
     case "$line" in
         session:*) 
             session=$( echo $line | awk -F: '{print $2}' | sed "s/\${argv}/$argv/g" | sed "s/\${file}/$conf_file/g"  | sed "s/^[ ]*//g" | sed "s/[ ]*$//g" | tr -s " " | sed "s/[. ]/_/g" )
-
+            
             if [ -z "$session" ]; then
+                session="$conf_file\${id}"
+            fi
+            
+            if [[ "$session" =~ \$\{id\} ]]; then
                 cnt=0
-                dup=1
-
-                while [ -n "$dup" ]; do
-                    session="anon${cnt}"
-                    tmux_session_exist $session
+                new=
+                while [ -z "$new" ]; do
+                    session_tmp=$( echo $session | sed "s/\${id}/$cnt/g" )
+                    echo $session | sed "s/\${id}.*$/$cnt/g" | wc -c > ${status_left_length_file}
+                    tmux_session_exist $session_tmp
                     if [ $? -ne 0 ];then
-                        dup=
+                        new=1
+                        session="$session_tmp"
                         break
                     fi
                     cnt=$(expr $cnt + 1)
                 done
             fi
-            
+
             echo $session > $session_file
             echo "0" > $window_anon_cnt_file
 
@@ -153,6 +177,7 @@ cat ${load_file_tmp} | while read line; do
                     tmux new-window -n $window
                 else
                     tmux new-session -d -n $window -s $session
+                    set_status_left_length $session
                 fi
                 cat ${window_cmd_file} | while read cmd; do
                     tmux send-keys "eval $(echo ${cmd} | sed "s/\${window}/$window/g" | sed "s/\${file}/$conf_file/g" )" C-m
@@ -193,6 +218,7 @@ cat ${load_file_tmp} | while read line; do
                 tmux_session_exist $session
                 if [ $? -ne 0 ];then
                     tmux new-session -d -n $session -s $session
+                    set_status_left_length $session
                     window_1st=1
                 fi
 
@@ -236,6 +262,7 @@ session=$(cat $session_file)
 tmux_session_exist $session
 if [ $? -ne 0 ]; then
     tmux new-session -d -n $session -s $session
+    set_status_left_length $session
 fi
 
 rm -f ${tmpd}/*
