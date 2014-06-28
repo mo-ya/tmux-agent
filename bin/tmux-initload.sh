@@ -40,7 +40,7 @@ set_status_left_length(){
     status_left=$( tmux show-options -g status-left | awk '{print $2}' | sed -e 's/\#\[[^]]*\]//g' | sed -e 's/\"//g' )
 
     if [[ "$status_left" =~ ^#S ]]; then
-        status_left_length=$( cat ${status_left_length_file} )
+        status_left_length=$(cat ${status_left_length_file} | tr \\r \\n)
         default_status_left_length=$( tmux show-options -g status-left-length 2>/dev/null | awk '{print $2}' )
         if [ $status_left_length -gt $default_status_left_length ]; then
             tmux set-option -t $session status-left-length $status_left_length >/dev/null
@@ -50,7 +50,7 @@ set_status_left_length(){
 }
 
 ##### Internal Settings #####
-tmpd="/tmp/tmux-load.$$"
+tmpd="/tmp/tmux-initload.$$"
 
 load_file_tmp="${tmpd}/load_file"
 err_file="${tmpd}/error"
@@ -98,7 +98,7 @@ argv="$*"
 test -d $tmpd || mkdir $tmpd
 reset_files ${tmp_files}
 
-cat ${load_file} > ${load_file_tmp}
+cat ${load_file} | tr \\r \\n > ${load_file_tmp}
 echo "" >> ${load_file_tmp}
 
 echo 0 > ${status_left_length_file}
@@ -153,7 +153,7 @@ cat ${load_file_tmp} | while read line; do
             echo $window_command >> $window_cmd_file
             ;;
         window:*)
-            session=$(cat $session_file)
+            session=$(cat $session_file | tr \\r \\n)
             if [ -z "$session" ]; then
                 echo ""
                 echo "  ERROR: \"session\" is not found. Please write \"session:\" on the file."
@@ -164,12 +164,13 @@ cat ${load_file_tmp} | while read line; do
             
             windows="$(echo $line | sed 's/^window: *//g' | sed "s/\${argv}/$argv/g" | sed "s/\${file}/$conf_file/g" )"
             if [ -z "$windows" ]; then
-                window_anon_cnt=$(cat $window_anon_cnt_file)
+                window_anon_cnt=$(cat $window_anon_cnt_file | tr \\r \\n)
                 windows="${session}_${window_anon_cnt}"
                 expr $window_anon_cnt + 1 > $window_anon_cnt_file
             fi
 
             echo $windows > $window_file
+            windows=$(cat $window_file | tr \\r \\n)
 
             for window in $(eval echo $windows); do
                 tmux_session_exist $session
@@ -201,13 +202,14 @@ cat ${load_file_tmp} | while read line; do
             ;;
         pane:*)
             panes="$(echo $line | sed 's/^pane: *//g' | sed "s/\${argv}/$argv/g" | sed "s/\${file}/$conf_file/g" )"
-            echo $pane > $pane_file
-            windows=$(cat $window_file)
+            echo $panes > $pane_file
+            panes=$(cat $pane_file | tr \\r \\n)
+            windows=$(cat $window_file | tr \\r \\n)
             if [ -z "$windows" ]; then
                 windows="$session"
             fi
 
-            pane_layout=$(cat ${pane_layout_file})
+            pane_layout=$(cat ${pane_layout_file} | tr \\r \\n)
             if [ -z "$pane_layout" ]; then
                 pane_layout="even-vertical"
             fi
@@ -237,7 +239,7 @@ cat ${load_file_tmp} | while read line; do
                     done
                 done
                 
-                pane_sync=$(cat ${pane_sync_file})
+                pane_sync=$(cat ${pane_sync_file} | tr \\r \\n)
                 if [ -n "$pane_sync" ]; then
                     tmux set-window-option synchronize-panes on >/dev/null
                 fi
@@ -257,8 +259,8 @@ cat ${load_file_tmp} | while read line; do
     esac
 done
 
-err=$(cat ${err_file})
-session=$(cat $session_file)
+err=$(cat ${err_file} | tr \\r \\n)
+session=$(cat $session_file | tr \\r \\n)
 
 tmux_session_exist $session
 if [ $? -ne 0 ]; then
