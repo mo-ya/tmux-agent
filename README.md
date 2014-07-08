@@ -1,14 +1,18 @@
 tmux-initload - tmux initial actions loader
 ==========
 
-- [Background](#Background)
-- [Overview](#Overview)
-- [Installation](#Installation)
-- [Zsh completion enhancement](#Zsh completion enhancement)
-- [File Format](#File Format)
-    - [Keys](#Keys)
-    - [Variables](#Variables)
-- [Test Environment](#Test Environment)
+- [Background](#background)
+- [Overview](#overview)
+- [Installation](#installation)
+- [Zsh completion enhancement](#zsh completion enhancement)
+- [File Format](#file format)
+    - [Keys](#keys)
+    - [Variables](#variables)
+    - [Comment](#comment)
+    - [Indent](#indent)
+    - [Blank line](#blank line)
+- [Sample initial action files](#sample initial action files)
+- [Test Environment](#test environment)
 
 Background
 ----------
