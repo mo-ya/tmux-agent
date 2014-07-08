@@ -4,15 +4,15 @@ tmux-initload - tmux initial actions loader
 - [Background](#background)
 - [Overview](#overview)
 - [Installation](#installation)
-- [Zsh completion enhancement](#zsh completion enhancement)
+- [Zsh completion enhancement](#zsh-completion-enhancement)
 - [File Format](#file format)
     - [Keys](#keys)
     - [Variables](#variables)
     - [Comment](#comment)
     - [Indent](#indent)
-    - [Blank line](#blank line)
-- [Sample initial action files](#sample initial action files)
-- [Test Environment](#test environment)
+    - [Blank line](#blank-line)
+- [Sample initial action files](#sample-initial-action-files)
+- [Test Environment](#test-environment)
 
 Background
 ----------
@@ -136,12 +136,12 @@ File Format
     <td>Anywhere</td>
     <td>Same as session</td>
     <td>${file}, ${argv}</td>
-    <td>If two or more words are specified, multiple windows are created for each word. In addition, brace expansion of bash is available. For example, `host{1,2,5}` is treated as `host1 host2 host5`, `id{009..012}` is treated as `host009 host010 host011 host012`, and so on. </td>
+    <td>If two or more words are specified, multiple windows are created for each word. In addition, brace expansion of bash is available. For example, <kbd>host{1,2,5}</kbd> is treated as <kbd>host1 host2 host5</kbd>, <kbd>id{009..012}</kbd> is treated as <kbd>id009 id010 id011 id012</kbd>, and so on. </td>
   </tr>
   <tr>
     <th>window-command</th>
     <td>Command executed in the target window</td>
-    <td>Above target **window** description</td>
+    <td>Above target <strong>window</strong> description</td>
     <td>nothing</td>
     <td>${file}, ${window}</td>
     <td>The command is executed in each window. ${window} is replaced with value of "window".</td>
@@ -149,7 +149,7 @@ File Format
   <tr>
     <th>pane</th>
     <td>Pane name</td>
-    <td>Below target **window** (If window is nothing, anywhere)</td>
+    <td>Below target <strong>window</strong> (If window is nothing, anywhere)</td>
     <td>Same as window</td>
     <td>${file}, ${argv}</td>
     <td>If two or more words are specified, multiple panes are created for each word. Brace expansion of bash is available as same as window. </td>
@@ -157,7 +157,7 @@ File Format
   <tr>
     <th>pane-command</th>
     <td>Command executed in the target pane</td>
-    <td>Above target **pane** description</td>
+    <td>Above target <strong>pane</strong> description</td>
     <td>nothing</td>
     <td>${file}, ${window}, ${pane}</td>
     <td>The command is executed in each pane. ${pane} and ${window} are replaced with value of "pane" and "window".</td>
@@ -165,7 +165,7 @@ File Format
   <tr>
     <th>pane-syncd</th>
     <td>Synchronize the target pane (and panes in the same window). The value is ignored.</td>
-    <td>Above target **pane** description</td>
+    <td>Above target <strong>pane</strong> description</td>
     <td>nothing</td>
     <td>none</td>
     <td></td>
@@ -173,7 +173,7 @@ File Format
   <tr>
     <th>pane-layout</th>
     <td>Set layout</td>
-    <td>Above target **pane** description</td>
+    <td>Above target <strong>pane</strong> description</td>
     <td>even-vertical</td>
     <td>none</td>
     <td>Available values are [layout-name of tmux](http://www.openbsd.org/cgi-bin/man.cgi?query=tmux) (ex. even-vertical, tiled, ...)</td>
@@ -205,7 +205,7 @@ File Format
     <th>${argv}</th>
     <td>Command line arguments</td>
     <td>session, window, pane</td>
-    <td>For example, `tmux-initload <file> a b{1,2} c{09..11}` is executed, ${argv} is replaced with `a b1 b2 c09 c10 c11`</td>
+    <td>For example, <kbd>tmux-initload <file> a b{1,2} c{09..11}</kbd> is executed, ${argv} is replaced with <kbd>a b1 b2 c09 c10 c11</kbd></td>
   </tr>
   <tr>
     <th>${window}</th>
@@ -239,7 +239,7 @@ Blank line is ignored.
 Sample initial action files
 ----------
 
-See [Samples](./tree/master/conf.samples)
+See [Samples](./conf.samples)
 
 
 Test Environment
