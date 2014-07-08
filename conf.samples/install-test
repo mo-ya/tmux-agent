@@ -1,0 +1,32 @@
+session:
+  window: Please
+    pane-command: echo 1. This window is
+    pane: 
+    pane-command: echo 2. splited 
+    pane: 
+    pane-command: echo 3. to four
+    pane: 
+    pane-command: echo 4. tiled panes
+    pane-command: echo 5. OK. Please go to next window
+    pane-layout: tiled
+    pane: 
+  window: Check
+    pane-command: echo 1. Please check "pane1,2,4,5" panes are displayed
+    pane-command: echo 2. Please check panes are spread evenly from top to bottom.
+    pane-command: echo 3. "OK. Please go to next window"
+    pane: 
+    pane-command: echo ${pane}
+    pane: pane{1..2} pane{4,5}
+  window: Each
+    pane-command: echo 1. Please check "a1 a2 b7 b8 b9" panes are displayed at the bottom.
+    pane-command: echo 2. Please check panes are synchronized.
+    pane-command: echo 3. "OK. Please go to next window"
+    pane: 
+    pane-command: echo ${pane}
+    pane-layout: main-horizontal
+    pane-sync:
+    pane: {a{1,2},b{7..9}}
+  window-command: echo 1. Thank you try tmux-initload. Install is completed. Please Enjoy\\\\!\\\\!
+  window: Window
+    
+  
