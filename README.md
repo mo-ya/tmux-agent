@@ -136,7 +136,7 @@ File Format
     <td>Anywhere</td>
     <td>Same as session</td>
     <td>${file}, ${argv}</td>
-    <td>If two or more words are specified, multiple windows are created for each word. In addition, brace expansion of bash is available. For example, <kbd>host{1,2,5}</kbd> is treated as <kbd>host1 host2 host5</kbd>, <kbd>id{009..012}</kbd> is treated as <kbd>id009 id010 id011 id012</kbd>, and so on. </td>
+    <td>If two or more words are specified, multiple windows are created for each word. In addition, brace expansion of bash is available. For example, <code>host{1,2,5}</code> is treated as <code>host1 host2 host5</code>, <code>id{009..012}</code> is treated as <code>id009 id010 id011 id012</code>, and so on. </td>
   </tr>
   <tr>
     <th>window-command</th>
@@ -176,7 +176,7 @@ File Format
     <td>Above target <strong>pane</strong> description</td>
     <td>even-vertical</td>
     <td>none</td>
-    <td>Available values are [layout-name of tmux](http://www.openbsd.org/cgi-bin/man.cgi?query=tmux) (ex. even-vertical, tiled, ...)</td>
+    <td>Available values are <strong><a target="_blank" href="http://www.openbsd.org/cgi-bin/man.cgi?query=tmux">layout-names of tmux</a></strong> (ex. even-vertical, tiled, ...)</td>
   </tr>
 </table>
 
@@ -205,17 +205,17 @@ File Format
     <th>${argv}</th>
     <td>Command line arguments</td>
     <td>session, window, pane</td>
-    <td>For example, <kbd>tmux-initload <file> a b{1,2} c{09..11}</kbd> is executed, ${argv} is replaced with <kbd>a b1 b2 c09 c10 c11</kbd></td>
+    <td>For example, <code>tmux-initload <file> a b{1,2} c{09..11}</code> is executed, ${argv} is replaced with <code>a b1 b2 c09 c10 c11</code></td>
   </tr>
   <tr>
     <th>${window}</th>
-    <td>Value of target window/td>
+    <td>Value of target window</td>
     <td>window-command, pane-command</td>
     <td></td>
   </tr>
   <tr>
     <th>${pane}</th>
-    <td>Value of target pane/td>
+    <td>Value of target pane</td>
     <td>pane-command</td>
     <td></td>
   </tr>
