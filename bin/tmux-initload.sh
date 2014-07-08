@@ -203,7 +203,7 @@ cat ${load_file_tmp} | while read line; do
                     window_countup
                 fi
                 cat ${window_cmd_file} | while read cmd; do
-                    tmux send-keys "eval $(echo ${cmd} | sed "s/\${window}/$window/g" | sed "s/\${file}/$conf_file/g" )" C-m
+                    tmux send-keys "eval \"$(echo ${cmd} | sed "s/\${window}/$window/g" | sed "s/\${file}/$conf_file/g" )\"" C-m
                 done
             done
             reset_files ${window_cmd_file}
@@ -263,7 +263,7 @@ cat ${load_file_tmp} | while read line; do
                         tmux select-layout -t :${window_current_index} $pane_layout >/dev/null
                     fi
                     cat ${pane_cmd_file} | while read cmd; do
-                        tmux send-keys "eval $(echo ${cmd} | sed "s/\${pane}/$pane/g" | sed "s/\${window}/$window/g" | sed "s/\${file}/$conf_file/g" )" C-m
+                        tmux send-keys "eval \"$(echo ${cmd} | sed "s/\${pane}/$pane/g" | sed "s/\${window}/$window/g" | sed "s/\${file}/$conf_file/g" )\"" C-m
                     done
                 done
                 
