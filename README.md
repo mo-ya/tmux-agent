@@ -5,7 +5,9 @@ tmux-initload - tmux initial actions loader
 - [Overview](#overview)
 - [Installation](#installation)
 - [Zsh completion enhancement](#zsh-completion-enhancement)
-- [File Format](#file format)
+- [Usage](#usage)
+- [Additional Functions](#additional-functions)
+- [File Format](#file-format)
     - [Keys](#keys)
     - [Variables](#variables)
     - [Comment](#comment)
@@ -108,6 +110,38 @@ Setting is completed. After .zshrc is reloaded, input  tmux-initload <TAB>. As a
     tail-webservs-log   -- config
     tail-webservs-log   -- attached
 
+
+Usage
+----------
+
+Use tmux-initload as following steps.
+
+1.  Prepare your initial action file. See [File Format](#file-format) and [Samples](./conf.samples) for reference
+
+2.  Locate the file in `~/.tmux-initload-conf/`.
+
+3.  Execute `tmux-initliad <file>` (If you use ${argv}, execute `tmux-initliad <file> [arguments ..]`)
+
+4.  Do the initial actions fulfill your expectation?
+    
+    If you are not satisfied, please modify the initial action file.
+    
+5.  The role of tmux-initload is all. After that, please operate tmux by normal methods.
+
+
+Additional Functions
+----------
+
+### Load an existing session
+
+If you specified existing (attached/detached) session
+ as an argument of tmux-initload, the session is attached.
+ 
+    $ tmux-initload <session>
+
+If a config file with the same name is existing, loading the config file is prior.
+
+
 File Format
 ----------
 
@@ -128,7 +162,7 @@ File Format
     <td>Top of a file</td>
     <td>${file}${id}</td>
     <td>${file}, ${id}, ${argv}</td>
-    <td>This key is necessary. (Other keys are optional)</td>
+    <td>This key is necessary. (Other keys are optional). If a session with the same name exists already, the existing session is attached. If you want to open another session by the same action, use ${id}. The variable is replaced with an unique number.</td>
   </tr>
   <tr>
     <th>window</th>
@@ -199,13 +233,13 @@ File Format
     <th>${id}</th>
     <td>Integer (0,1,2,...)</td>
     <td>session</td>
-    <td>It is automatically increased, if same number is already used.</td>
+    <td>It is automatically increased, if same number is already used in the same session name.</td>
   </tr>
   <tr>
     <th>${argv}</th>
     <td>Command line arguments</td>
     <td>session, window, pane</td>
-    <td>For example, <code>tmux-initload <file> a b{1,2} c{09..11}</code> is executed, ${argv} is replaced with <code>a b1 b2 c09 c10 c11</code></td>
+    <td>For example, <code>tmux-initload &lt;init-file&gt; a b{1,2} c{09..11}</code> is executed, ${argv} is replaced with <code>a b1 b2 c09 c10 c11</code></td>
   </tr>
   <tr>
     <th>${window}</th>
