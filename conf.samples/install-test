@@ -12,7 +12,7 @@ session:
     pane: 
   window: Check
     pane-command: echo 1. Please check "pane1,2,4,5" panes are displayed
-    pane-command: echo 2. Please check panes are spread evenly from top to bottom.
+    pane-command: echo 2. Please check that panes are spread evenly from top to bottom.
     pane-command: echo 3. "OK. Please go to next window"
     pane: 
     pane-command: echo ${pane}
