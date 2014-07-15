@@ -198,11 +198,11 @@ File Format
   </tr>
   <tr>
     <th>pane-syncd</th>
-    <td>Synchronize the target pane (and panes in the same window). The value is ignored.</td>
+    <td>Synchronize the target pane (and panes in the same window)</td>
     <td>Above target <strong>pane</strong> description</td>
     <td>nothing</td>
     <td>none</td>
-    <td></td>
+    <td>The value is not needed.</td>
   </tr>
   <tr>
     <th>pane-layout</th>
@@ -261,7 +261,7 @@ File Format
 A line with **#** at line head is ignored. That is treated as a comment.
 
 
-### Indent
+### Indentation
 
 Indentation is ignored. Indents in above examples are inserted for readability only.
 
