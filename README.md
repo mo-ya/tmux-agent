@@ -11,7 +11,7 @@ tmux-initload - tmux initial actions loader
     - [Keys](#keys)
     - [Variables](#variables)
     - [Comment](#comment)
-    - [Indent](#indent)
+    - [Indentation](#indentation)
     - [Blank line](#blank-line)
 - [Sample initial action files](#sample-initial-action-files)
 - [Test Environment](#test-environment)
