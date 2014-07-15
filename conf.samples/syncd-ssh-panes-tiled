@@ -1,0 +1,5 @@
+session: ${file}${id}_${argv}
+  pane-command: ssh ${pane}
+  pane-sync:
+  pane-layout: tiled
+  pane: ${argv}

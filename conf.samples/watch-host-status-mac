@@ -1,0 +1,9 @@
+session: 
+  pane-command: vm_stat 1
+  pane: 
+  pane-command: top
+  pane:
+  pane-command: watch -n 1 -d df
+  pane:
+  pane-command: watch -n 1 -d iostat
+  pane:
