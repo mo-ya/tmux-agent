@@ -300,9 +300,18 @@ cat ${load_file_tmp} | while read line; do
                         ${TMUX_CMD} split-window
                         ${TMUX_CMD} select-layout -t :${window_current_index} $pane_layout >/dev/null
                     fi
+                    sync_mode=$( ${TMUX_CMD} show-window-options synchronize-panes )
+                    if [ "$sync_mode" == "synchronize-panes on" ]; then
+                        ${TMUX_CMD} set-window-option synchronize-panes off >/dev/null
+                    fi
+
                     cat ${pane_cmd_file} | while read cmd; do
                         ${TMUX_CMD} send-keys "eval \"$(echo ${cmd} | sed "s/\${pane}/$pane/g" | sed "s/\${window}/$window/g" | sed "s/\${file}/$conf_file/g" )\"" C-m
                     done
+
+                    if [ "$sync_mode" == "synchronize-panes on" ]; then
+                        ${TMUX_CMD} set-window-option synchronize-panes on >/dev/null
+                    fi
                 done
                 
                 pane_sync=$(cat ${pane_sync_file} | tr \\r \\n)
