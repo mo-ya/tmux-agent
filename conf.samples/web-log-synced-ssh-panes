@@ -1,0 +1,5 @@
+session: web-log-synced-ssh-panes
+  pane-command: ssh ${pane}
+  pane-command: tail -f /var/log/httpd/access_log
+  pane-sync:
+  pane: web{01..05}
