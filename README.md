@@ -34,7 +34,7 @@ tmux-initload is a simple bash script. It depends on bash, tmux, and basic Linux
 
 A loaded file is comma separated format (key:value). Examples are as follows.
 
-- Open 2 windows and ssh app1, app2 servers. Then hostname command on remote servers are executed
+- Open 2 windows and ssh app1, app2 servers. Then hostname command on remote servers are executed.
 
         # file: app-ssh-windows
         session: app-ssh-windows
@@ -102,12 +102,12 @@ Please test as follows.
 
 If the checks pass, installation is completed. 
 
-If you use zsh, usability could be increaced more. Please read next section.
+If you use Zsh, the usability could be increaced more. Please read next section. There are the usage description and the detail of file format below that.
 
 Zsh completion enhancement
 ----------
 
-Please move the directory where tmux-initload is downloaded. 
+Please move the directory where tmux-initload is downloaded. Then, copy "zshrc.tmux" to your home directory.
 
     $ cp zsh.completion/zshrc.tmux ~/.zshrc.tmux
 
@@ -116,7 +116,7 @@ Then add a following description into ~/.zshrc under `autoload -U compinit ; com
     ZSHRC=${HOME}/.zshrc.tmux
     [ -f ${ZSHRC} ] && source ${ZSHRC}
 
-Setting is completed. After .zshrc is reloaded, input  tmux-initload <TAB>. As a result, config files (and attached/detached sessions) are complemented as follows.
+Setting is completed. After .zshrc is reloaded, input tmux-initload <TAB>. As a result, config files (and attached/detached sessions) are complemented as follows.
 
     $ tmux-initload <TAB>
 
@@ -125,7 +125,7 @@ Setting is completed. After .zshrc is reloaded, input  tmux-initload <TAB>. As a
     multi-ssh-windows1  -- detached
     no-title            -- config
     no-title0           -- detached
-    sync-ssh-panes     -- config
+    sync-ssh-panes      -- config
     tail-webservs-log   -- config
     tail-webservs-log   -- attached
 
@@ -135,7 +135,7 @@ Usage
 
 Use tmux-initload as following steps.
 
-1.  Prepare your initial action file. See [File Format](#file-format) and [Samples](./conf.samples) for reference
+1.  Prepare your initial action file. See [File Format](#file-format) and [Samples](./conf.samples) for reference.
 
 2.  Locate the file in `~/.tmux-initload-conf/`.
 
@@ -258,7 +258,7 @@ File Format
     <th>${argv}</th>
     <td>Command line arguments</td>
     <td>session, window, pane</td>
-    <td>For example, <code>tmux-initload &lt;init-file&gt; a b{1,2} c{09..11}</code> is executed, ${argv} is replaced with <code>a b1 b2 c09 c10 c11</code></td>
+    <td>For example, <code>tmux-initload &lt;init-file&gt; a b{1,2} c{9..11}</code> is executed, ${argv} is replaced with <code>a b1 b2 c9 c10 c11</code></td>
   </tr>
   <tr>
     <th>${window}</th>
@@ -282,7 +282,7 @@ A line with **#** at line head is ignored. That is treated as a comment.
 
 ### Indentation
 
-Indentation is ignored. Indents in above examples are inserted for readability only.
+Indents are ignored. Indents in above examples are inserted for readability only.
 
 
 ### Blank line
