@@ -72,7 +72,7 @@ tmux-initload is used as follows.
 
 ![web-log-sync-ssh-panes Appearance Image](images/web-log-sync-ssh-panes.png "web-log-sync-ssh-panes Appearance Image")
 
-    $ tmux-initload sync-ssh-panes 
+    $ tmux-initload sync-ssh-panes dev{1,2} stg
 
 ![sync-ssh-panes Appearance Image](images/sync-ssh-panes.png "sync-ssh-panes Appearance Image")
 
