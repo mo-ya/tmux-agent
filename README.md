@@ -32,22 +32,33 @@ Overview
 
 tmux-initload is a simple bash script. It depends on bash, tmux, and basic Linux/BSD commands. 
 
-Loaded file is comma separated format (key:value). Examples are as follows.
+A loaded file is comma separated format (key:value). Examples are as follows.
 
-- Open 3 windows and ssh app01, app02, app03 servers. Then hostname command on remote servers are executed
+- Open 2 windows and ssh app1, app2 servers. Then hostname command on remote servers are executed
 
+        # file: app-ssh-windows
         session: app-ssh-windows
           window-command: ssh ${window}
           window-command: hostname
-          window: app{01..03}
+          window: app{1,2}
 
-- Open 1 window and 5 panes. Then ssh web01 -- web05 servers. Then logs of the web servers are displayed by tail command. At last, the panes are synchronized.
+- Open 1 window and 3 panes. Then ssh web1 -- web3 servers. Then logs of the web servers are displayed by tail command. At last, the panes are synchronized.
 
-        session: web-log-synced-ssh-panes
+        # file: web-log-sync-ssh-panes
+        session: web-log-sync-ssh-panes
           pane-command: ssh ${pane}
           pane-command: tail -f /var/log/httpd/access_log
           pane-sync:
-          pane: web{01..05}
+          pane: web{1..3}
+
+- Target hosts are specified by command line arguments. And layout is set to "even-horizontal".
+
+        # file: sync-ssh-panes
+        session: ${file}_${id}_${argv}
+          pane-command: ssh -l moya ${pane}
+          pane-sync:
+          pane-layout: even-horizontal
+          pane: ${argv}
 
 The files are expected to be located a certain directory (default: `~/.tmux-initload-conf/`).
 
@@ -55,7 +66,15 @@ tmux-initload is used as follows.
 
     $ tmux-initload app-ssh-windows
 
-    $ tmux-initload web-log-synced-ssh-panes
+![app-ssh-windows Appearance Image](images/app-ssh-windows.png "app-ssh-windows Appearance Image")
+
+    $ tmux-initload web-log-sync-ssh-panes
+
+![web-log-sync-ssh-panes Appearance Image](images/web-log-sync-ssh-panes.png "web-log-sync-ssh-panes Appearance Image")
+
+    $ tmux-initload sync-ssh-panes 
+
+![sync-ssh-panes Appearance Image](images/sync-ssh-panes.png "sync-ssh-panes Appearance Image")
 
 Installation
 ----------
@@ -106,7 +125,7 @@ Setting is completed. After .zshrc is reloaded, input  tmux-initload <TAB>. As a
     multi-ssh-windows1  -- detached
     no-title            -- config
     no-title0           -- detached
-    syncd-ssh-panes     -- config
+    sync-ssh-panes     -- config
     tail-webservs-log   -- config
     tail-webservs-log   -- attached
 
@@ -170,7 +189,7 @@ File Format
     <td>Anywhere</td>
     <td>Same as session</td>
     <td>${file}, ${argv}</td>
-    <td>If two or more words are specified, multiple windows are created for each word. In addition, brace expansion of bash is available. For example, <code>host{1,2,5}</code> is treated as <code>host1 host2 host5</code>, <code>id{009..012}</code> is treated as <code>id009 id010 id011 id012</code>, and so on. </td>
+    <td>If two or more words are specified, multiple windows are created for each word. In addition, brace expansion of bash is available. For example, <code>host{1,2,5}</code> is treated as <code>host1 host2 host5</code>, <code>id{9..12}</code> is treated as <code>id9 id10 id11 id12</code>, and so on. </td>
   </tr>
   <tr>
     <th>window-command</th>
@@ -197,7 +216,7 @@ File Format
     <td>The command is executed in each pane. ${pane} and ${window} are replaced with value of "pane" and "window".</td>
   </tr>
   <tr>
-    <th>pane-syncd</th>
+    <th>pane-sync</th>
     <td>Synchronize the target pane (and panes in the same window)</td>
     <td>Above target <strong>pane</strong> description</td>
     <td>nothing</td>
