@@ -7,7 +7,7 @@
 ########################################
 ## Settings (Please modify for your environment)
 ########################################
-TMUX_YAML_PATH="${HOME}/.tmux-initload-conf"
+TMUX_YAML_PATH="${HOME}/.tmux-initload"
 TMUX_CMD="tmux"
 
 
@@ -17,7 +17,7 @@ TMUX_CMD="tmux"
 
 ##### Internal Variables #####
 VERSION="1.0"
-UPDATE="2014-07-15"
+UPDATE="2014-07-19"
 
 ##### Functions #####
 help(){

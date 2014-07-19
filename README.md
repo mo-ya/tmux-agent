@@ -13,7 +13,7 @@ tmux-initload - tmux initial actions loader
     - [Comment](#comment)
     - [Indentation](#indentation)
     - [Blank line](#blank-line)
-- [Sample initial action files](#sample-initial-action-files)
+- [Sample Initial Action Files](#sample-initial-action-files)
 - [Test Environment](#test-environment)
 
 Background
@@ -60,7 +60,7 @@ A loaded file is comma separated format (key:value). Examples are as follows.
           pane-layout: even-horizontal
           pane: ${argv}
 
-The files are expected to be located a certain directory (default: `~/.tmux-initload-conf/`).
+The files are expected to be located a certain directory (default: `~/.tmux-initload/`).
 
 tmux-initload is used as follows. 
 
@@ -92,7 +92,7 @@ If git is not available in your system, download a zip file from https://github.
     
     $ chmod 755 ~/bin/tmux-initload
     
-    $ cp -r conf.samples ~/.tmux-initload-conf
+    $ cp -r init-action-files.sample ~/.tmux-initload
 
 Please test as follows.
 
@@ -135,9 +135,9 @@ Usage
 
 Use tmux-initload as following steps.
 
-1.  Prepare your initial action file. See [File Format](#file-format) and [Samples](./conf.samples) for reference.
+1.  Prepare your initial action file. See [File Format](#file-format) and [Samples](./init-action-files.sample) for reference.
 
-2.  Locate the file in `~/.tmux-initload-conf/`.
+2.  Locate the file in `~/.tmux-initload/`.
 
 3.  Execute `tmux-initliad <file>` (If you use ${argv}, execute `tmux-initliad <file> [arguments ..]`)
 
@@ -289,10 +289,10 @@ Indents are ignored. Indents in above examples are inserted for readability only
 
 Blank line is ignored. 
 
-Sample initial action files
+Sample Initial Action Files
 ----------
 
-See [Samples](./conf.samples)
+See [Samples](./init-action-files.sample)
 
 
 Test Environment
