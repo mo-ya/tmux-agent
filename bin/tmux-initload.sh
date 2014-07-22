@@ -17,7 +17,7 @@ TMUX_CMD="tmux"
 
 ##### Internal Variables #####
 VERSION="1.0"
-UPDATE="2014-07-19"
+UPDATE="2014-07-23"
 
 ##### Functions #####
 help(){
@@ -54,11 +54,14 @@ set_status_left_length(){
 
     status_left=$( ${TMUX_CMD} show-options -g status-left | awk '{print $2}' | sed -e 's/\#\[[^]]*\]//g' | sed -e 's/\"//g' )
 
-    if [[ "$status_left" =~ ^#S ]]; then
-        status_left_length=$(cat ${status_left_length_file} | tr \\r \\n)
+    if [[ "$status_left" =~ ^(.*)#S ]]; then
+        left_prefix=${BASH_REMATCH[1]}
+        left_len=${#left_prefix}
+        
+        need_status_left_length=$( expr $(cat ${status_left_length_file} | tr \\r \\n) + $left_len )
         default_status_left_length=$( ${TMUX_CMD} show-options -g status-left-length 2>/dev/null | awk '{print $2}' )
-        if [ $status_left_length -gt $default_status_left_length ]; then
-            ${TMUX_CMD} set-option -t $session status-left-length $status_left_length >/dev/null
+        if [ $need_status_left_length -gt $default_status_left_length ]; then
+            ${TMUX_CMD} set-option -t $session status-left-length $need_status_left_length >/dev/null
         fi
     fi
 }
