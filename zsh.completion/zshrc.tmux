@@ -9,9 +9,9 @@
 
 function _tmux-initload {
     local -a _confs _attacheds _detacheds
-    _confs=( $( find ${HOME}/.tmux-initload/* -maxdepth 0  \( -type f -or -type l \) -exec basename '{}' ';' 2>/dev/null | sed -e "s/$/\:config/g" ) )
+    _confs=( $( find ${HOME}/.tmux-initload/* -maxdepth 0  \( -type f -or -type l \) -exec basename '{}' ';' 2>/dev/null | sed -e "s/$/\:init-action/g" ) )
     for _conf in $_confs; do
-        _describe "Initial Actions Config File: $_conf" _conf
+        _describe "Initial Action File: $_conf" _conf
     done
     
     _attacheds=( $(tmux ls 2>/dev/null | awk -F: '/(attached)/ {print $1}' | sed -e "s/$/\:attached/g") )

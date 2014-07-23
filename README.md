@@ -116,17 +116,17 @@ Then add a following description into ~/.zshrc under `autoload -U compinit ; com
     ZSHRC=${HOME}/.zshrc.tmux
     [ -f ${ZSHRC} ] && source ${ZSHRC}
 
-Setting is completed. After .zshrc is reloaded, input tmux-initload <TAB>. As a result, config files (and attached/detached sessions) are complemented as follows.
+Setting is completed. After .zshrc is reloaded, input tmux-initload <TAB>. As a result, initial action files (and attached/detached sessions) are complemented as follows.
 
     $ tmux-initload <TAB>
 
-    multi-ssh-windows   -- config
+    multi-ssh-windows   -- init-action
     multi-ssh-windows0  -- attached
     multi-ssh-windows1  -- detached
-    no-title            -- config
+    no-title            -- init-action
     no-title0           -- detached
-    sync-ssh-panes      -- config
-    tail-webservs-log   -- config
+    sync-ssh-panes      -- init-action
+    tail-webservs-log   -- init-action
     tail-webservs-log   -- attached
 
 
@@ -158,7 +158,7 @@ If you specified existing (attached/detached) session
  
     $ tmux-initload <session>
 
-If a config file with the same name is existing, loading the config file is prior.
+If a initial action file with the same name is existing, loading the file is prior.
 
 
 File Format
