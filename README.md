@@ -181,7 +181,7 @@ File Format
     <td>Top of a file</td>
     <td>${file}${id}</td>
     <td>${file}, ${id}, ${argv}</td>
-    <td>This key is necessary. (Other keys are optional). If a session with the same name exists already, the existing session is attached. If you want to open another session by the same action, use ${id}. The variable is replaced with an unique number. Spaces and dots are replaced to underscores automatically</td>
+    <td>This key is necessary. (Other keys are optional). If a session with the same name exists already, the existing session is attached. If you want to open another session by the same action, use ${id}. The variable is replaced with an unique number. Spaces and dots are replaced to underscores automatically.</td>
   </tr>
   <tr>
     <th>window</th>

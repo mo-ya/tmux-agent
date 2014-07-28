@@ -26,7 +26,7 @@ session:
     pane-layout: main-horizontal
     pane-sync:
     pane: {a{1,2},b{7..9}}
-  window-command: echo 1. Thank you try tmux-initload. Install is completed. Please Enjoy\\\\!\\\\!
+  window-command: echo 1. Thank you try tmux-agent. Install is completed. Please Enjoy\\\\!\\\\!
   window: Window
     
   
