@@ -1,4 +1,4 @@
-tmux-initload - tmux initial actions loader
+tmux-agent - tmux initial action agent
 ==========
 
 - [Background](#background)
@@ -25,12 +25,12 @@ But initial actions that are creations of windows/panes, layouts sets, movements
 
 A simple solution of that is coding scripts with tmux commands. However the coding is troublesome, too.
 
-The tmux-initload loads simple format files that present initial actions, and acts according to the contents. It may make some tmux users more happy.
+The tmux-agent loads simple format files that present initial actions, and acts according to the contents. It may make some tmux users more happy.
 
 Overview
 ----------
 
-tmux-initload is a simple bash script. It depends on bash, tmux, and basic Linux/BSD commands. 
+tmux-agent is a simple bash script. It depends on bash, tmux, and basic Linux/BSD commands. 
 
 A loaded file is comma separated format (key:value). Examples are as follows.
 
@@ -60,19 +60,19 @@ A loaded file is comma separated format (key:value). Examples are as follows.
           pane-layout: even-horizontal
           pane: ${argv}
 
-The files are expected to be located a certain directory (default: `~/.tmux-initload/`).
+The files are expected to be located a certain directory (default: `~/.tmux-agent/`).
 
-tmux-initload is used as follows. 
+tmux-agent is used as follows. 
 
-    $ tmux-initload app-ssh-windows
+    $ tmux-agent app-ssh-windows
 
 ![app-ssh-windows Appearance Image](images/app-ssh-windows.png "app-ssh-windows Appearance Image")
 
-    $ tmux-initload web-log-sync-ssh-panes
+    $ tmux-agent web-log-sync-ssh-panes
 
 ![web-log-sync-ssh-panes Appearance Image](images/web-log-sync-ssh-panes.png "web-log-sync-ssh-panes Appearance Image")
 
-    $ tmux-initload sync-ssh-panes dev{1,2} stg
+    $ tmux-agent sync-ssh-panes dev{1,2} stg
 
 ![sync-ssh-panes Appearance Image](images/sync-ssh-panes.png "sync-ssh-panes Appearance Image")
 
@@ -80,23 +80,23 @@ Installation
 ----------
 
 Installation example is as follows.
-In this example, tmux-initload is installed in `~/bin` (The directory is expected to be included in PATH environment variable)
+In this example, tmux-agent is installed in `~/bin` (The directory is expected to be included in PATH environment variable)
 
-    $ git clone git://github.com/mo-ya/tmux-initload.git
+    $ git clone git://github.com/mo-ya/tmux-agent.git
 
-If git is not available in your system, download a zip file from https://github.com/mo-ya/tmux-initload and extract that.
+If git is not available in your system, download a zip file from https://github.com/mo-ya/tmux-agent and extract that.
 
-    $ cd tmux-initload
+    $ cd tmux-agent
     
-    $ cp bin/tmux-initload.sh ~/bin/tmux-initload
+    $ cp bin/tmux-agent.sh ~/bin/tmux-agent
     
-    $ chmod 755 ~/bin/tmux-initload
+    $ chmod 755 ~/bin/tmux-agent
     
-    $ cp -r init-action-files.sample ~/.tmux-initload
+    $ cp -r init-action-files.sample ~/.tmux-agent
 
 Please test as follows.
 
-    $ tmux-initload install-test
+    $ tmux-agent install-test
 
 "install-test" session will start. Please check each window.
 
@@ -107,7 +107,7 @@ If you use Zsh, the usability could be increaced more. Please read next section.
 Zsh completion enhancement
 ----------
 
-Please move the directory where tmux-initload is downloaded. Then, copy "zshrc.tmux" to your home directory.
+Please move the directory where tmux-agent is downloaded. Then, copy "zshrc.tmux" to your home directory.
 
     $ cp zsh.completion/zshrc.tmux ~/.zshrc.tmux
 
@@ -116,9 +116,9 @@ Then add a following description into ~/.zshrc under `autoload -U compinit ; com
     ZSHRC=${HOME}/.zshrc.tmux
     [ -f ${ZSHRC} ] && source ${ZSHRC}
 
-Setting is completed. After .zshrc is reloaded, input tmux-initload <TAB>. As a result, initial action files (and attached/detached sessions) are complemented as follows.
+Setting is completed. After .zshrc is reloaded, input tmux-agent <TAB>. As a result, initial action files (and attached/detached sessions) are complemented as follows.
 
-    $ tmux-initload <TAB>
+    $ tmux-agent <TAB>
 
     multi-ssh-windows   -- init-action
     multi-ssh-windows0  -- attached
@@ -133,19 +133,19 @@ Setting is completed. After .zshrc is reloaded, input tmux-initload <TAB>. As a 
 Usage
 ----------
 
-Use tmux-initload as following steps.
+Use tmux-agent as following steps.
 
 1.  Prepare your initial action file. See [File Format](#file-format) and [Samples](./init-action-files.sample) for reference.
 
-2.  Locate the file in `~/.tmux-initload/`.
+2.  Locate the file in `~/.tmux-agent/`.
 
-3.  Execute `tmux-initliad <file>` (If you use ${argv}, execute `tmux-initliad <file> [arguments ..]`)
+3.  Execute `tmux-agent <file>` (If you use ${argv}, execute `tmux-agent <file> [arguments ..]`)
 
 4.  Do the initial actions fulfill your expectation?
     
     If you are not satisfied, please modify the initial action file.
     
-5.  The role of tmux-initload is all. After that, please operate tmux by normal methods.
+5.  The role of tmux-agent is all. After that, please operate tmux by normal methods.
 
 
 Additional Functions
@@ -154,9 +154,9 @@ Additional Functions
 ### Load an existing session
 
 If you specified existing (attached/detached) session
- as an argument of tmux-initload, the session is attached.
+ as an argument of tmux-agent, the session is attached.
  
-    $ tmux-initload <session>
+    $ tmux-agent <session>
 
 If a initial action file with the same name is existing, loading the file is prior.
 
@@ -181,7 +181,7 @@ File Format
     <td>Top of a file</td>
     <td>${file}${id}</td>
     <td>${file}, ${id}, ${argv}</td>
-    <td>This key is necessary. (Other keys are optional). If a session with the same name exists already, the existing session is attached. If you want to open another session by the same action, use ${id}. The variable is replaced with an unique number.</td>
+    <td>This key is necessary. (Other keys are optional). If a session with the same name exists already, the existing session is attached. If you want to open another session by the same action, use ${id}. The variable is replaced with an unique number. Spaces and dots are replaced to underscores automatically</td>
   </tr>
   <tr>
     <th>window</th>
@@ -258,7 +258,7 @@ File Format
     <th>${argv}</th>
     <td>Command line arguments</td>
     <td>session, window, pane</td>
-    <td>For example, <code>tmux-initload &lt;init-file&gt; a b{1,2} c{9..11}</code> is executed, ${argv} is replaced with <code>a b1 b2 c9 c10 c11</code></td>
+    <td>For example, <code>tmux-agent &lt;init-file&gt; a b{1,2} c{9..11}</code> is executed, ${argv} is replaced with <code>a b1 b2 c9 c10 c11</code></td>
   </tr>
   <tr>
     <th>${window}</th>

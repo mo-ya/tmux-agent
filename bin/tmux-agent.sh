@@ -7,7 +7,7 @@
 ########################################
 ## Settings (Please modify for your environment)
 ########################################
-TMUX_YAML_PATH="${HOME}/.tmux-initload"
+TMUX_YAML_PATH="${HOME}/.tmux-agent"
 TMUX_CMD="tmux"
 
 
@@ -16,19 +16,19 @@ TMUX_CMD="tmux"
 ########################################
 
 ##### Internal Variables #####
-VERSION="1.1"
-UPDATE="2014-07-23"
+VERSION="1.2"
+UPDATE="2014-07-28"
 
 ##### Functions #####
 help(){
     show_version
     echo ""
-    echo "  Usage: tmux-initload <init-action-file|session>"
+    echo "  Usage: tmux-agent <init-action-file|session>"
     echo ""
 }
 
 show_version(){
-    echo "tmux-initload v${VERSION} (update: ${UPDATE})"
+    echo "tmux-agent v${VERSION} (update: ${UPDATE})"
 }
 
 reset_files(){
@@ -77,7 +77,7 @@ window_countup(){
 }
 
 ##### Internal Settings #####
-tmpd="/tmp/tmux-initload.$$"
+tmpd="/tmp/tmux-agent.$$"
 
 load_file_tmp="${tmpd}/load_file"
 err_file="${tmpd}/error"

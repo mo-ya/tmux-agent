@@ -1,15 +1,15 @@
 # -*- mode: sh; -*-
-# tmux-initload completion settings for zsh(1)
+# tmux-agent completion settings for zsh(1)
 #
 
-## It is expected that following compinit settings are written above the _tmux-initload code
+## It is expected that following compinit settings are written above the _tmux-agent code
 #
 #autoload -U compinit
 #compinit
 
-function _tmux-initload {
+function _tmux-agent {
     local -a _confs _attacheds _detacheds
-    _confs=( $( find ${HOME}/.tmux-initload/* -maxdepth 0  \( -type f -or -type l \) -exec basename '{}' ';' 2>/dev/null | sed -e "s/$/\:init-action/g" ) )
+    _confs=( $( find ${HOME}/.tmux-agent/* -maxdepth 0  \( -type f -or -type l \) -exec basename '{}' ';' 2>/dev/null | sed -e "s/$/\:init-action/g" ) )
     for _conf in $_confs; do
         _describe "Initial Action File: $_conf" _conf
     done
@@ -27,4 +27,4 @@ function _tmux-initload {
     return 0;
 }
 
-compdef _tmux-initload tmux-initload
+compdef _tmux-agent tmux-agent
