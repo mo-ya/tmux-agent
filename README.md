@@ -98,9 +98,9 @@ Please test as follows.
 
     $ tmux-agent install-test
 
-"install-test" session will start. Please check each window.
+"install-test" session will start. Please check each window. (Messages may be displayed redundantly. That is not an elegant expression. But that is an expected behavior.)
 
-If the checks pass, installation is completed. 
+If the checks pass, the installation is completed. 
 
 If you use Zsh, the usability could be increaced more. Please read next section. There are the usage description and the detail of file format below that.
 
@@ -116,7 +116,7 @@ Then add a following description into ~/.zshrc under `autoload -U compinit ; com
     ZSHRC=${HOME}/.zshrc.tmux
     [ -f ${ZSHRC} ] && source ${ZSHRC}
 
-Setting is completed. After .zshrc is reloaded, input tmux-agent <TAB>. As a result, initial action files (and attached/detached sessions) are complemented as follows.
+After .zshrc is reloaded, input tmux-agent &lt;TAB&gt;. As a result, initial action files (and attached/detached sessions) are complemented as follows.
 
     $ tmux-agent <TAB>
 
