@@ -19,7 +19,7 @@ tmux-agent - tmux initial action agent
 Background
 ----------
 
-tmux is a very useful multifunctional terminal multiplexer.
+**[tmux](http://tmux.sourceforge.net)** is a very useful multifunctional terminal multiplexer.
 I use tmux habitually, and like tmux's behavior basically. 
 But initial actions that are creations of windows/panes, layouts sets, movements between directories, ssh to remote servers and so on become troublesome as tmux is used for various works.
 
@@ -277,7 +277,7 @@ File Format
 
 ### Comment
 
-A line with **#** at line head is ignored. That is treated as a comment.
+Lines with **#** at line head are ignored. These are treated as comments.
 
 
 ### Indentation
@@ -287,7 +287,7 @@ Indents are ignored. Indents in above examples are inserted for readability only
 
 ### Blank line
 
-Blank line is ignored. 
+Blank lines are ignored. 
 
 Sample Initial Action Files
 ----------
