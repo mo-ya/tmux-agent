@@ -16,8 +16,8 @@ TMUX_CMD="tmux"
 ########################################
 
 ##### Internal Variables #####
-VERSION="1.2"
-UPDATE="2014-07-28"
+VERSION="1.3"
+UPDATE="2014-08-02"
 
 ##### Functions #####
 help(){
@@ -39,7 +39,7 @@ reset_files(){
 
 tmux_session_exist(){
     session_name=$1
-    ${TMUX_CMD} new-session -d -s $session_name 2>/dev/null
+    ${TMUX_CMD} new-session -x ${width} -y ${height} -d -s $session_name 2>/dev/null
     if [ $? -eq 0 ]; then
         ${TMUX_CMD} kill-session -t $session_name
         return 1
@@ -77,6 +77,9 @@ window_countup(){
 }
 
 ##### Internal Settings #####
+height=$(tput lines)
+width=$(tput cols)
+
 tmpd="/tmp/tmux-agent.$$"
 
 load_file_tmp="${tmpd}/load_file"
@@ -239,7 +242,7 @@ cat ${load_file_tmp} | while read line; do
                     ${TMUX_CMD} new-window -n $window
                     window_countup
                 else
-                    ${TMUX_CMD} new-session -d -n $window -s $session
+                    ${TMUX_CMD} new-session -x ${width} -y ${height} -d -n $window -s $session
                     set_status_left_length $session
                     window_countup
                 fi
@@ -288,7 +291,7 @@ cat ${load_file_tmp} | while read line; do
             for window in $(eval echo $windows); do
                 tmux_session_exist $session
                 if [ $? -ne 0 ];then
-                    ${TMUX_CMD} new-session -d -n $session -s $session
+                    ${TMUX_CMD} new-session -x ${width} -y ${height} -d -n $session -s $session
                     set_status_left_length $session
                     window_countup
                 fi
@@ -301,7 +304,7 @@ cat ${load_file_tmp} | while read line; do
                     else
                         ${TMUX_CMD} select-layout -t :${window_current_index} tiled >/dev/null
                         ${TMUX_CMD} split-window
-                        ${TMUX_CMD} select-layout -t :${window_current_index} $pane_layout >/dev/null
+                        ${TMUX_CMD} select-layout -t :${window_current_index} "$pane_layout" >/dev/null
                     fi
                     sync_mode=$( ${TMUX_CMD} show-window-options synchronize-panes )
                     if [ "$sync_mode" == "synchronize-panes on" ]; then
@@ -344,7 +347,7 @@ session=$(cat $session_file | tr \\r \\n)
 
 tmux_session_exist $session
 if [ $? -ne 0 ]; then
-    ${TMUX_CMD} new-session -d -n $session -s $session
+    ${TMUX_CMD} new-session -x ${width} -y ${height} -d -n $session -s $session
     set_status_left_length $session
     window_countup
 fi
