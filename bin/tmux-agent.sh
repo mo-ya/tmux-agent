@@ -16,7 +16,7 @@ TMUX_CMD="tmux"
 ########################################
 
 ##### Internal Variables #####
-VERSION="1.3"
+VERSION="1.4"
 UPDATE="2014-08-02"
 
 ##### Functions #####
@@ -116,6 +116,11 @@ while [ -z "${init_act_file}" ]; do
         -[vV]*)
             shift
             show_version
+            exit 0
+            ;;
+        -l)
+            shift
+            find ${TMUX_YAML_PATH}/* -maxdepth 0  \( -type f -or -type l \) -exec basename '{}' ';' 2>/dev/null
             exit 0
             ;;
         -*)
