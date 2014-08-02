@@ -1,0 +1,11 @@
+# tmux-agent completion settings for bash(1)
+#
+
+## It is expected that following compinit settings are written above the _tmux-agent code
+
+_tmux-agent() {
+    COMPREPLY=()
+    COMPREPLY=( $( compgen -W "$( tmux-agent -l 2>/dev/null )" ) )
+}
+
+complete -F _tmux-agent tmux-agent
