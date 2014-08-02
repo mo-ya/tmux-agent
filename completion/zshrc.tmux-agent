@@ -1,4 +1,3 @@
-# -*- mode: sh; -*-
 # tmux-agent completion settings for zsh(1)
 #
 
@@ -8,10 +7,10 @@
 #compinit
 
 function _tmux-agent {
-    local -a _confs _attacheds _detacheds
-    _confs=( $( tmux-agent -l 2>/dev/null | sed -e "s/$/\:init-action/g" ) )
-    for _conf in $_confs; do
-        _describe "Initial Action File: $_conf" _conf
+    local -a _initactfiles _attacheds _detacheds
+    _initactfiles=( $( tmux-agent -l 2>/dev/null | sed -e "s/$/\:init-action/g" ) )
+    for _initactfile in $_initactfiles; do
+        _describe "Initial Action File: $_initactfile" _initactfile
     done
     
     _attacheds=( $(tmux ls 2>/dev/null | awk -F: '/(attached)/ {print $1}' | sed -e "s/$/\:attached/g") )
