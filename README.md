@@ -326,7 +326,7 @@ Comparison with tmuxinator
 - Advantages
     - Brace expansion of bash is available.
         - ex. {a,b,c}, {4..8}
-    - Description of similar actions in multi windows and panes can be written simply. In a following example, 6 windows are started, and 3 panes are started in each window. Then ssh logins and display logs are executed in each pane.
+    - Description of similar actions in multi windows and panes can be written simply. In a following example, 6 windows are started, and 3 panes are started in each window. Then ssh logins and displays of logs are executed in each pane.
     
             # remote-servers-log-display
             session:
@@ -338,8 +338,7 @@ Comparison with tmuxinator
     - Multi sessions can be started from one initial action file by using ${id}.
 - Disadvantages
     - tmuxinator's file format (Yaml) is constructive. So readability of the files are better than tmux-agent's initial action files.
-    - A function of completion for fish is prepared.
-    - An editor is started by a tmuxinator option. Otherwise tmux-agent's initial action files must be edited by starting a editor manually.
+    - An editor is started by a tmuxinator option. On the other hand, tmux-agent's initial action files must be edited by starting a editor manually.
 
 
 Test Environment
