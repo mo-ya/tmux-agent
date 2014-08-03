@@ -254,9 +254,24 @@ File Format
     <td>Above target <strong>pane</strong> description</td>
     <td>even-vertical</td>
     <td>none</td>
-    <td>Available values are <strong><a target="_blank" href="http://www.openbsd.org/cgi-bin/man.cgi?query=tmux">layout-names of tmux</a></strong> (ex. even-vertical, tiled, ...)</td>
+    <td>Available values are <strong><a target="_blank" href="http://www.openbsd.org/cgi-bin/man.cgi?query=tmux">layout-names of tmux</a></strong> (ex. even-vertical, tiled, ...), and a previously used layout (ex. <code>bb62,159x48,0,0{79x48,0,0,79x48,80,0}</code>). </td>
   </tr>
 </table>
+
+- Memo: How to get the layout of current windows in a form suitable for use with pane-layout
+
+        $ tmux list-window -a -F "#S: #W: #{window_layout}"
+
+        session: window: 77cf,80x24,0,0{54x24,0,0[54x16,0,0,828,54x7,0,17,830],25x24,55,0,829}
+
+  `77cf..` -- `..,55,0,829}` is available as a layout. For example,
+
+        # file: custom-layout
+        session:
+          pane-layout: 77cf,80x24,0,0{54x24,0,0[54x16,0,0,828,54x7,0,17,830],25x24,55,0,829}
+          pane: {0..2}
+
+![custom-layout Appearance Image](images/custom-layout.png "custom-layout Appearance Image")
 
 ### Variables
 
