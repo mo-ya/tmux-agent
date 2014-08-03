@@ -4,7 +4,9 @@ tmux-agent - tmux initial action agent
 - [Background](#background)
 - [Overview](#overview)
 - [Installation](#installation)
-- [Zsh completion enhancement](#zsh-completion-enhancement)
+- [Completion](#completion)
+    - [Bash](#bash)
+    - [Zsh](#zsh)
 - [Usage](#usage)
 - [Additional Functions](#additional-functions)
 - [File Format](#file-format)
@@ -14,6 +16,7 @@ tmux-agent - tmux initial action agent
     - [Indentation](#indentation)
     - [Blank line](#blank-line)
 - [Sample Initial Action Files](#sample-initial-action-files)
+- [Comparison with tmuxinator](#comparison-with-tmuxinator)
 - [Test Environment](#test-environment)
 
 Background
@@ -25,7 +28,9 @@ But initial actions that are creations of windows/panes, layouts sets, movements
 
 A simple solution of that is coding scripts with tmux commands. However the coding is troublesome, too.
 
-The tmux-agent loads simple format files that present initial actions, and acts according to the contents. It may make some tmux users more happy.
+More better solution is using **[tmuxinator](https://github.com/tmuxinator/tmuxinator)**. The tmuxinator loads Yaml files, and manages complex tmux sessions according to the Yaml files.
+
+**tmux-agent** is a similar tool, too. Or the **tmux-agent** loads simple format files (not Yaml) that present initial actions, and acts according to the contents. **tmux-agent** has some good/poor features as compared to tmuxinator. For details, see [Comparison with tmuxinator](#comparison-with-tmuxinator).
 
 Overview
 ----------
@@ -102,18 +107,38 @@ Please test as follows.
 
 If the checks pass, the installation is completed. 
 
-If you use Zsh, the usability could be increaced more. Please read next section. There are the usage description and the detail of file format below that.
+If you use Bash or Zsh, the usability could be increased more. Please read a next section. There are the usage description and the detail of file format below that.
 
-Zsh completion enhancement
+Completion
 ----------
 
-Please move the directory where tmux-agent is downloaded. Then, copy "zshrc.tmux" to your home directory.
+## Bash
 
-    $ cp zsh.completion/zshrc.tmux ~/.zshrc.tmux
+Please move the directory where tmux-agent is downloaded. Then, copy "bashrc.tmux-agent" to your home directory.
+
+    $ cp completion/bashrc.tmux-agent ~/.bashrc.tmux-agent
+
+Then add a following description into ~/.bashrc .
+
+    source ${HOME}/.bashrc.tmux-agent
+
+After .bashrc is reloaded, input tmux-agent &lt;TAB&gt;. As a result, initial action files are complemented as follows.
+
+    $ tmux-agent <TAB>
+
+    app-ssh-windows     no-title          tail-webservs-log
+    multi-ssh-windows   sync-ssh-panes    web-log-sync-ssh-panes
+
+
+## Zsh
+
+Please move the directory where tmux-agent is downloaded. Then, copy "zshrc.tmux-agent" to your home directory.
+
+    $ cp completion/zshrc.tmux-agent ~/.zshrc.tmux-agent
 
 Then add a following description into ~/.zshrc under `autoload -U compinit ; compinit` description.
 
-    ZSHRC=${HOME}/.zshrc.tmux
+    ZSHRC=${HOME}/.zshrc.tmux-agent
     [ -f ${ZSHRC} ] && source ${ZSHRC}
 
 After .zshrc is reloaded, input tmux-agent &lt;TAB&gt;. As a result, initial action files (and attached/detached sessions) are complemented as follows.
@@ -293,6 +318,28 @@ Sample Initial Action Files
 ----------
 
 See [Samples](./init-action-files.sample)
+
+
+Comparison with tmuxinator
+----------
+
+- Advantages
+    - Brace expansion of bash is available.
+        - ex. {a,b,c}, {4..8}
+    - Description of similar actions in multi windows and panes can be written simply. In a following example, 6 windows are started, and 3 panes are started in each window. Then ssh logins and display logs are executed in each pane.
+    
+            # remote-servers-log-display
+            session:
+              window: app{8,9} web{3..6}
+                pane-command: ssh ${window}
+                pane-command: tail -f /var/log/${pane}
+                pane: messages secure cron 
+    - Command line arguments can be used in actions by ${argv} variable. So target hosts etc. can be changed dynamically.
+    - Multi sessions can be started from one initial action file by using ${id}.
+- Disadvantages
+    - tmuxinator's file format (Yaml) is constructive. So readability of the files are better than tmux-agent's initial action files.
+    - A function of completion for fish is prepared.
+    - An editor is started by a tmuxinator option. Otherwise tmux-agent's initial action files must be edited by starting a editor manually.
 
 
 Test Environment
