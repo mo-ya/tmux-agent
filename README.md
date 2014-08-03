@@ -271,7 +271,7 @@ File Format
           pane-layout: 77cf,80x24,0,0{54x24,0,0[54x16,0,0,828,54x7,0,17,830],25x24,55,0,829}
           pane: {0..2}
 
-![custom-layout Appearance Image](images/custom-layout.png "custom-layout Appearance Image")
+  ![custom-layout Appearance Image](images/custom-layout.png "custom-layout Appearance Image")
 
 ### Variables
 
