@@ -1,3 +1,4 @@
+# file: multi-ssh-windows-with-argv
 session: ${file}${id}_${argv}
   window-command: ssh ${window}
   window: ${argv}

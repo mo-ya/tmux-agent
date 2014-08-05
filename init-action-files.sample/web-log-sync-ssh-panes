@@ -1,3 +1,4 @@
+# file: web-log-synced-ssh-panes
 session: web-log-synced-ssh-panes
   pane-command: ssh ${pane}
   pane-command: tail -f /var/log/httpd/access_log

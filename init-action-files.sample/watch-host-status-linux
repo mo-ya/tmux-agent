@@ -1,3 +1,4 @@
+# file: watch-host-status-linux
 session: 
   pane-command: mpstat 1
   pane:

@@ -1,11 +1,22 @@
+# file: open-panes-with-argv
 session:
-  window:
-    pane:
-    pane:
-    pane:
-  window:
+  window: sync-vertical
     pane-sync:
-    pane:
-    pane:
-    pane:
+    pane: ${argv}
+  window: no-sync-vertical
+    pane: ${argv}
+  window: sync-tiled
+    pane-layout: tiled
+    pane-sync:
+    pane: ${argv}
+  window: no-sync-tiled
+    pane-layout: tiled
+    pane: ${argv}
+  window: sync-horizontal
+    pane-layout: even-horizontal
+    pane-sync:
+    pane: ${argv}
+  window: no-sync-horizontal
+    pane-layout: even-horizontal
+    pane: ${argv}
  

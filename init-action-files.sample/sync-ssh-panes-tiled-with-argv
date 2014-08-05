@@ -1,3 +1,4 @@
+# file: sync-ssh-panes-tiled-with-argv
 session: ${file}${id}_${argv}
   pane-command: ssh ${pane}
   pane-sync:

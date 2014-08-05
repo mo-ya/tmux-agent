@@ -1,3 +1,4 @@
+# file: install-test
 session:
   window: Please
     pane-command: echo 1. This window is
