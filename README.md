@@ -264,7 +264,7 @@ File Format
 
         session: window: 77cf,80x24,0,0{54x24,0,0[54x16,0,0,828,54x7,0,17,830],25x24,55,0,829}
 
-  `77cf..` -- `..,55,0,829}` is available as a layout. For example,
+  `77cf,80x24,0,0{...` -- `..,55,0,829}` is available as a layout. For example,
 
         # file: custom-layout
         session:
@@ -343,7 +343,7 @@ Comparison with tmuxinator
         - ex. {a,b,c}, {4..8}
     - Description of similar actions in multi windows and panes can be written simply. In a following example, 6 windows are started, and 3 panes are started in each window. Then ssh logins and displays of logs are executed in each pane.
     
-            # remote-servers-log-display
+            # file: remote-servers-log-display
             session:
               window: app{8,9} web{3..6}
                 pane-command: ssh ${window}
