@@ -37,6 +37,17 @@ reset_files(){
     done
 }
 
+session_already_load_check(){
+    session=$(cat $session_file | tr \\r \\n)
+    if [ -z "$session" ]; then
+        echo ""
+        echo "  ERROR: \"session\" is not found. Please write \"session:\" on the file."
+        echo ""
+        echo "1" > ${err_file}
+        exit 1
+    fi
+}
+
 tmux_session_exist(){
     session_name=$1
     ${TMUX_CMD} new-session -x ${width} -y ${height} -d -s $session_name 2>/dev/null
@@ -52,7 +63,7 @@ set_status_left_length(){
 
     session=$1
 
-    status_left=$( ${TMUX_CMD} show-options -g status-left | awk '{print $2}' | sed -e 's/\#\[[^]]*\]//g' | sed -e 's/\"//g' )
+    status_left=$( ${TMUX_CMD} show-options -g status-left | awk '{print $2}' | sed -e 's|\#\[[^]]*\]||g' | sed -e 's|\"||g' )
 
     if [[ "$status_left" =~ ^(.*)#S ]]; then
         left_prefix=${BASH_REMATCH[1]}
@@ -178,7 +189,7 @@ cat ${load_file_tmp} | while read line; do
     
     case "$line" in
         session:*) 
-            session=$( echo $line | awk -F: '{print $2}' | sed "s/\${argv}/$argv/g" | sed "s/\${file}/$init_act_file/g"  | sed "s/^[ ]*//g" | sed "s/[ ]*$//g" | tr -s " " | sed "s/[. ]/_/g" )
+            session=$( echo $line | awk -F: '{print $2}' | sed "s|\${argv}|$argv|g" | sed "s|\${file}|$init_act_file|g"  | sed "s|^[ ]*||g" | sed "s|[ ]*$||g" | tr -s " " | sed "s|[. ]|_|g" )
             
             if [ -z "$session" ]; then
                 session="$init_act_file\${id}"
@@ -188,8 +199,8 @@ cat ${load_file_tmp} | while read line; do
                 cnt=0
                 new=
                 while [ -z "$new" ]; do
-                    session_tmp=$( echo $session | sed "s/\${id}/$cnt/g" )
-                    echo $session | sed "s/\${id}.*$/$cnt/g" | wc -c > ${status_left_length_file}
+                    session_tmp=$( echo $session | sed "s|\${id}|$cnt|g" )
+                    echo $session | sed "s|\${id}.*$|$cnt|g" | wc -c > ${status_left_length_file}
                     tmux_session_exist $session_tmp
                     if [ $? -ne 0 ];then
                         new=1
@@ -204,32 +215,27 @@ cat ${load_file_tmp} | while read line; do
             echo "0" > $window_anon_cnt_file
 
             tmux_session_exist $session
-            if [ $? -eq 0 ];then
+            if [ $? -eq 0 ]; then
                 break
             fi
 
             ;;
         window-command:*)
-            window_command="$(echo $line | sed 's/^window-command: *//g')"
+            session_already_load_check
+            window_command="$(echo $line | sed 's|^window-command: *||g')"
             #echo $window_command | tr ';' '\n' > $window_cmd_file
             echo $window_command >> $window_cmd_file
             ;;
         window:*)
+            session_already_load_check
             session=$(cat $session_file | tr \\r \\n)
-            if [ -z "$session" ]; then
-                echo ""
-                echo "  ERROR: \"session\" is not found. Please write \"session:\" on the file."
-                echo ""
-                echo "1" > ${err_file}
-                exit 1
-            fi
 
             window_increment_num=$(cat ${window_increment_num_file} | tr \\r \\n)
             window_base_index=$(cat ${window_base_index_file} | tr \\r \\n)
             window_base_index=$(expr ${window_base_index} + ${window_increment_num})
             echo ${window_base_index} | tr \\r \\n > ${window_base_index_file}
             window_increment_num=0
-            windows="$(echo $line | sed 's/^window: *//g' | sed "s/\${argv}/$argv/g" | sed "s/\${file}/$init_act_file/g" )"
+            windows="$(echo $line | sed 's|^window: *||g' | sed "s|\${argv}|$argv|g" | sed "s|\${file}|$init_act_file|g" )"
             if [ -z "$windows" ]; then
                 window_anon_cnt=$(cat $window_anon_cnt_file | tr \\r \\n)
                 windows="${session}_${window_anon_cnt}"
@@ -252,7 +258,7 @@ cat ${load_file_tmp} | while read line; do
                     window_countup
                 fi
                 cat ${window_cmd_file} | while read cmd; do
-                    ${TMUX_CMD} send-keys "eval \"$(echo ${cmd} | sed "s/\${window}/$window/g" | sed "s/\${file}/$init_act_file/g" )\"" C-m
+                    ${TMUX_CMD} send-keys "eval \"$(echo ${cmd} | sed "s|\${window}|$window|g" | sed "s|\${file}|$init_act_file|g" )\"" C-m
                 done
             done
             reset_files ${window_cmd_file}
@@ -260,19 +266,23 @@ cat ${load_file_tmp} | while read line; do
             
             ;;
         pane-command:*)
-            pane_command="$(echo $line | sed 's/^pane-command: *//g')"
+            session_already_load_check
+            pane_command="$(echo $line | sed 's|^pane-command: *||g')"
             #echo $pane_command | tr ';' '\n'  > $pane_cmd_file
             echo $pane_command >> $pane_cmd_file
             ;;
         pane-sync:*)
+            session_already_load_check
             echo 1 >> $pane_sync_file
             ;;
         pane-layout:*)
-            pane_layout="$(echo $line | sed 's/^pane-layout: *//g')"
+            session_already_load_check
+            pane_layout="$(echo $line | sed 's|^pane-layout: *||g')"
             echo $pane_layout >> $pane_layout_file
             ;;
         pane:*)
-            panes="$(echo $line | sed 's/^pane: *//g' | sed "s/\${argv}/$argv/g" | sed "s/\${file}/$init_act_file/g" )"
+            session_already_load_check
+            panes="$(echo $line | sed 's|^pane: *||g' | sed "s|\${argv}|$argv|g" | sed "s|\${file}|$init_act_file|g" )"
             echo $panes > $pane_file
             panes=$(cat $pane_file | tr \\r \\n)
             windows=$(cat $window_file | tr \\r \\n)
@@ -317,7 +327,7 @@ cat ${load_file_tmp} | while read line; do
                     fi
 
                     cat ${pane_cmd_file} | while read cmd; do
-                        ${TMUX_CMD} send-keys "eval \"$(echo ${cmd} | sed "s/\${pane}/$pane/g" | sed "s/\${window}/$window/g" | sed "s/\${file}/$init_act_file/g" )\"" C-m
+                        ${TMUX_CMD} send-keys "eval \"$(echo ${cmd} | sed "s|\${pane}|$pane|g" | sed "s|\${window}|$window|g" | sed "s|\${file}|$init_act_file|g" )\"" C-m
                     done
 
                     if [ "$sync_mode" == "synchronize-panes on" ]; then
