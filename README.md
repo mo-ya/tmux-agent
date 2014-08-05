@@ -112,7 +112,7 @@ If you use Bash or Zsh, the usability could be increased more. Please read a nex
 Completion
 ----------
 
-## Bash
+### Bash
 
 Please move the directory where tmux-agent is downloaded. Then, copy "bashrc.tmux-agent" to your home directory.
 
@@ -130,7 +130,7 @@ After .bashrc is reloaded, input tmux-agent &lt;TAB&gt;. As a result, initial ac
     multi-ssh-windows   sync-ssh-panes    web-log-sync-ssh-panes
 
 
-## Zsh
+### Zsh
 
 Please move the directory where tmux-agent is downloaded. Then, copy "zshrc.tmux-agent" to your home directory.
 
