@@ -1,0 +1,6 @@
+# file: remote-servers-log-display
+session:
+  window: app{8,9} web{3..6}
+    pane-command: ssh ${window}
+    pane-command: tail -f /var/log/${pane}
+    pane: messages secure cron 
