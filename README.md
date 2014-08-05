@@ -353,6 +353,7 @@ Comparison with tmuxinator
     - Multi sessions can be started from one initial action file by using ${id}.
 - Disadvantages
     - tmuxinator's file format (Yaml) is constructive. So readability of the files are better than tmux-agent's initial action files.
+    - Some optional settings of tmuxinator is not available in tmux-agent. (ex. pre, pre_window, tmux_options, tmux_command, etc.)
     - An editor is started by a tmuxinator option. On the other hand, tmux-agent's initial action files must be edited by starting a editor manually.
 
 
