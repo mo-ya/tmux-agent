@@ -1,6 +1,6 @@
 #!/bin/bash
 ##
-## Copyright (C) 2014 Y.Morikawa <http://moya-notes.blogspot.jp/>
+## Copyright (C) 2015 Y.Morikawa <http://moya-notes.blogspot.jp/>
 ##
 ## License: MIT License  (See LICENSE.md)
 ##
@@ -16,8 +16,8 @@ TMUX_CMD="tmux"
 ########################################
 
 ##### Internal Variables #####
-VERSION="1.5"
-UPDATE="2014-08-05"
+VERSION="1.6"
+UPDATE="2015-05-21"
 
 ##### Functions #####
 help(){
@@ -222,7 +222,7 @@ cat ${load_file_tmp} | while read line; do
             ;;
         window-command:*)
             session_already_load_check
-            window_command="$(echo $line | sed 's|^window-command: *||g')"
+            window_command="$(echo $line | sed 's/"/\\\\"/g' | sed 's|^window-command: *||g')"
             #echo $window_command | tr ';' '\n' > $window_cmd_file
             echo $window_command >> $window_cmd_file
             ;;
@@ -267,7 +267,7 @@ cat ${load_file_tmp} | while read line; do
             ;;
         pane-command:*)
             session_already_load_check
-            pane_command="$(echo $line | sed 's|^pane-command: *||g')"
+            pane_command="$(echo $line | sed 's/"/\\\\"/g' | sed 's|^pane-command: *||g')"
             #echo $pane_command | tr ';' '\n'  > $pane_cmd_file
             echo $pane_command >> $pane_cmd_file
             ;;
