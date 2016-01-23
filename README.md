@@ -360,8 +360,8 @@ Comparison with tmuxinator
 Test Environment
 ----------
 
-- Tmux: **2.0**
+- Tmux: **2.1**
 
 - OS, bash
-    - OS: **Mac OS X 10.9.4 (Mavericks)**, bash: **GNU bash, version 3.2.51(1)-release**
-    - OS: **CentOS 6.5**, bash: **GNU bash, version 4.1.2(1)-release**
+    - OS: **Mac OS X 10.11.3 (El Capitan)**, bash: **GNU bash, version 3.2.57(1)-release**
+    - OS: **CentOS 6.7**, bash: **GNU bash, version 4.1.2(1)-release**
