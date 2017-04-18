@@ -329,6 +329,23 @@ Indents are ignored. Indents in above examples are inserted for readability only
 
 Blank lines are ignored. 
 
+
+### Some commands that are treated specially
+
+Commands specified in **window-command** and **pane-command** are executed continuously without waiting a previous command's return code. So, if first command takes a long time, next command may not work as expected.
+
+**sleep** and **usleep** commands specified in **window-command** and **pane-command** are not executed normally. These commands keep execution of next command waiting for specified time. 
+
+An example is as follows. If ssh login is finished within 3 seconds, tail command is executed in remote server. 
+
+    # file: 
+    session: 
+      pane-command: ssh poor-nw-remote-server
+      pane-command: sleep 3
+      pane-command: tail -f /var/log/httpd/access_log
+      pane: 
+
+
 Sample Initial Action Files
 ----------
 
@@ -360,8 +377,8 @@ Comparison with tmuxinator
 Test Environment
 ----------
 
-- Tmux: **2.1**
+- Tmux: **2.3**
 
 - OS, bash
-    - OS: **Mac OS X 10.11.3 (El Capitan)**, bash: **GNU bash, version 3.2.57(1)-release**
-    - OS: **CentOS 6.7**, bash: **GNU bash, version 4.1.2(1)-release**
+    - OS: **Mac OS X 10.11.6 (El Capitan)**, bash: **GNU bash, version 3.2.57(1)-release**
+    - OS: **CentOS 7.2**, bash: **GNU bash, 4.2.46(1)-release**

@@ -1,6 +1,6 @@
 #!/bin/bash
 ##
-## Copyright (C) 2015 Y.Morikawa <http://moya-notes.blogspot.jp/>
+## Copyright (C) 2017 Y.Morikawa <http://moya-notes.blogspot.jp/>
 ##
 ## License: MIT License  (See LICENSE.md)
 ##
@@ -16,8 +16,8 @@ TMUX_CMD="tmux"
 ########################################
 
 ##### Internal Variables #####
-VERSION="1.6"
-UPDATE="2015-05-21"
+VERSION="1.7"
+UPDATE="2017-03-29"
 
 ##### Functions #####
 help(){
@@ -258,7 +258,11 @@ cat ${load_file_tmp} | while read line; do
                     window_countup
                 fi
                 cat ${window_cmd_file} | while read cmd; do
-                    ${TMUX_CMD} send-keys "eval \"$(echo ${cmd} | sed "s|\${window}|$window|g" | sed "s|\${file}|$init_act_file|g" )\"" C-m
+                    if [[ ${cmd} =~ ^(sleep|usleep) ]]; then
+                        ${cmd}
+                    else
+                        ${TMUX_CMD} send-keys "eval \"$(echo ${cmd} | sed "s|\${window}|$window|g" | sed "s|\${file}|$init_act_file|g" )\"" C-m
+                    fi
                 done
             done
             reset_files ${window_cmd_file}
@@ -327,7 +331,11 @@ cat ${load_file_tmp} | while read line; do
                     fi
 
                     cat ${pane_cmd_file} | while read cmd; do
-                        ${TMUX_CMD} send-keys "eval \"$(echo ${cmd} | sed "s|\${pane}|$pane|g" | sed "s|\${window}|$window|g" | sed "s|\${file}|$init_act_file|g" )\"" C-m
+                        if [[ ${cmd} =~ ^(sleep|usleep) ]]; then
+                            ${cmd}
+                        else
+                            ${TMUX_CMD} send-keys "eval \"$(echo ${cmd} | sed "s|\${pane}|$pane|g" | sed "s|\${window}|$window|g" | sed "s|\${file}|$init_act_file|g" )\"" C-m
+                        fi
                     done
 
                     if [ "$sync_mode" == "synchronize-panes on" ]; then
