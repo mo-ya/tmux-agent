@@ -1,6 +1,6 @@
 #!/bin/bash
 ##
-## Copyright (C) 2017 Y.Morikawa <http://moya-notes.blogspot.jp/>
+## Copyright (C) 2018 Y.Morikawa <http://moya-notes.blogspot.jp/>
 ##
 ## License: MIT License  (See LICENSE.md)
 ##
@@ -16,8 +16,8 @@ TMUX_CMD="tmux"
 ########################################
 
 ##### Internal Variables #####
-VERSION="1.7"
-UPDATE="2017-03-29"
+VERSION="1.8"
+UPDATE="2018-05-24"
 
 ##### Functions #####
 help(){
@@ -105,10 +105,12 @@ pane_file="${tmpd}/pane"
 pane_sync_file="${tmpd}/pane-sync"
 pane_layout_file="${tmpd}/pane-layout"
 window_cmd_file="${tmpd}/window-command"
+window_cmd_prev_file="${tmpd}/window-command-prev"
 pane_cmd_file="${tmpd}/pane-command"
+pane_cmd_prev_file="${tmpd}/pane-command-prev"
 status_left_length_file="${tmpd}/status-left-length"
 
-tmp_files="${load_file_tmp} ${err_file} ${session_file} ${window_file} ${window_anon_cnt_file} ${windows_need_split_ary_file} ${window_base_index_file} ${window_increment_num_file} ${pane_file} ${pane_sync_file} ${pane_layout_file} ${window_cmd_file} ${pane_cmd_file} ${status_left_length_file}"
+tmp_files="${load_file_tmp} ${err_file} ${session_file} ${window_file} ${window_anon_cnt_file} ${windows_need_split_ary_file} ${window_base_index_file} ${window_increment_num_file} ${pane_file} ${pane_sync_file} ${pane_layout_file} ${window_cmd_file} ${window_cmd_prev_file} ${pane_cmd_file} ${pane_cmd_prev_file} ${status_left_length_file}"
 
 ##### Main Routine #####
 
@@ -257,15 +259,42 @@ cat ${load_file_tmp} | while read line; do
                     set_status_left_length $session
                     window_countup
                 fi
+                echo "$(LANG=C date +"%Y-%m-%d %H:%M:%S") $(hostname -s) tmux-agent: window[$window] is preparing .." >&2
                 cat ${window_cmd_file} | while read cmd; do
+
                     if [[ ${cmd} =~ ^(sleep|usleep) ]]; then
                         ${cmd}
                     else
+                        # If ssh* command was executed immediately before,
+                        # wait Prompt ($,#,>,:) before next send-keys (Max 10 sec)
+                        case "$(cat ${window_cmd_prev_file} 2>/dev/null)" in
+                            ssh* )
+                                last_char_rec1=
+                                last_char_rec2=
+                                for i in {1..50}; do
+                                    last_char=$(${TMUX_CMD} capture-pane -p | grep -v ^$ | tail -1 | sed 's/[ ]\+[^ ]\+\]$//' | sed 's/[ ]\+$//' | rev | cut -c 1)
+                                    if [ "$last_char_rec1" == "$last_char" ] && [ "$last_char_rec2" == "$last_char" ]  ; then
+                                        case "$last_char" in
+                                            "$" | "#" | ">" | ":" ) break ;;
+                                            * ) ;;
+                                        esac
+                                    fi
+                                    last_char_rec2=$last_char_rec1
+                                    last_char_rec1=$last_char
+                                    sleep 0.1
+                                done
+                                ;;
+                            * ) ;;
+                        esac
+
                         ${TMUX_CMD} send-keys "eval \"$(echo ${cmd} | sed "s|\${window}|$window|g" | sed "s|\${file}|$init_act_file|g" )\"" C-m
                     fi
+
+                    echo ${cmd} > ${window_cmd_prev_file}
+
                 done
             done
-            reset_files ${window_cmd_file}
+            reset_files ${window_cmd_file} ${window_cmd_prev_file}
             echo ${window_increment_num} | tr \\r \\n > ${window_increment_num_file}
             
             ;;
@@ -321,6 +350,7 @@ cat ${load_file_tmp} | while read line; do
                     if [ ${windows_need_split_ary[${window_current_index}]} -eq 0 ]; then
                         windows_need_split_ary[${window_current_index}]=1
                     else
+                        # Process to prevent the screen from becoming narrow enough not to divide
                         ${TMUX_CMD} select-layout -t :${window_current_index} tiled >/dev/null
                         ${TMUX_CMD} split-window
                         ${TMUX_CMD} select-layout -t :${window_current_index} "$pane_layout" >/dev/null
@@ -330,12 +360,40 @@ cat ${load_file_tmp} | while read line; do
                         ${TMUX_CMD} set-window-option synchronize-panes off >/dev/null
                     fi
 
+                    echo "$(LANG=C date +"%Y-%m-%d %H:%M:%S") $(hostname -s) tmux-agent: pane[$pane] is preparing .." >&2
                     cat ${pane_cmd_file} | while read cmd; do
+
                         if [[ ${cmd} =~ ^(sleep|usleep) ]]; then
                             ${cmd}
                         else
+                            # If ssh* command was executed immediately before,
+                            # wait Prompt ($,#,>,:) before next send-keys (Max 10 sec)
+                            case "$(cat ${pane_cmd_prev_file} 2>/dev/null)" in
+                                ssh* )
+                                    last_char_rec1=
+                                    last_char_rec2=
+                                    for i in {1..50}; do
+                                        last_char=$(${TMUX_CMD} capture-pane -p | grep -v ^$ | tail -1 | sed 's/[ ]\+[^ ]\+\]$//' | sed 's/[ ]\+$//' | rev | cut -c 1)
+                                        if [ "$last_char_rec1" == "$last_char" ] && [ "$last_char_rec2" == "$last_char" ]  ; then
+                                            case "$last_char" in
+                                                "$" | "#" | ">" | ":" ) break ;;
+                                                * ) ;;
+                                            esac
+                                        fi
+                                        last_char_rec2=$last_char_rec1
+                                        last_char_rec1=$last_char
+                                        sleep 0.1
+                                    done
+                                    ;;
+                                * ) ;;
+                            esac
+
                             ${TMUX_CMD} send-keys "eval \"$(echo ${cmd} | sed "s|\${pane}|$pane|g" | sed "s|\${window}|$window|g" | sed "s|\${file}|$init_act_file|g" )\"" C-m
+
                         fi
+
+                        echo ${cmd} > ${pane_cmd_prev_file}
+
                     done
 
                     if [ "$sync_mode" == "synchronize-panes on" ]; then
@@ -352,7 +410,7 @@ cat ${load_file_tmp} | while read line; do
                 window_current_index=$(expr ${window_current_index} + 1)
             done
 
-            reset_files ${pane_cmd_file} ${pane_sync_file}
+            reset_files ${pane_cmd_file} ${pane_sync_file} ${pane_cmd_prev_file}
             
             ;;
         *)
