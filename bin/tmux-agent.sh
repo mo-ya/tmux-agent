@@ -16,7 +16,7 @@ TMUX_CMD="tmux"
 ########################################
 
 ##### Internal Variables #####
-VERSION="1.8"
+VERSION="1.9"
 UPDATE="2018-05-24"
 
 ##### Functions #####
@@ -90,6 +90,10 @@ window_countup(){
 ##### Internal Settings #####
 height=$(tput lines)
 width=$(tput cols)
+
+wait_prompt_keyword="wait_prompt"
+wait_prompt_interval_sec=0.1
+wait_prompt_loop_num=50
 
 tmpd="/tmp/tmux-agent.$$"
 
@@ -264,29 +268,29 @@ cat ${load_file_tmp} | while read line; do
 
                     if [[ ${cmd} =~ ^(sleep|usleep) ]]; then
                         ${cmd}
-                    else
-                        # If ssh* command was executed immediately before,
-                        # wait Prompt ($,#,>,:) before next send-keys (Max 10 sec)
-                        case "$(cat ${window_cmd_prev_file} 2>/dev/null)" in
-                            ssh* )
-                                last_char_rec1=
-                                last_char_rec2=
-                                for i in {1..50}; do
-                                    last_char=$(${TMUX_CMD} capture-pane -p | grep -v ^$ | tail -1 | sed 's/[ ]\+[^ ]\+\]$//' | sed 's/[ ]\+$//' | rev | cut -c 1)
-                                    if [ "$last_char_rec1" == "$last_char" ] && [ "$last_char_rec2" == "$last_char" ]  ; then
-                                        case "$last_char" in
-                                            "$" | "#" | ">" | ":" ) break ;;
-                                            * ) ;;
-                                        esac
-                                    fi
-                                    last_char_rec2=$last_char_rec1
-                                    last_char_rec1=$last_char
-                                    sleep 0.1
-                                done
-                                ;;
-                            * ) ;;
-                        esac
+                    elif [ "${cmd}" == "${wait_prompt_keyword}" ]; then
+                        :
+                    elif [ "$(cat ${window_cmd_prev_file} 2>/dev/null)" == "${wait_prompt_keyword}" ]; then
+                        # If "wait_prompt" was set to command immediately before,
+                        # wait Prompt ($,#,>,:) before next send-keys
+                        echo "$(LANG=C date +"%Y-%m-%d %H:%M:%S") $(hostname -s) tmux-agent: window[$window] waiting prompt .." >&2
+                        last_char_rec1=
+                        last_char_rec2=
+                        for i in $(seq 1 ${wait_prompt_loop_num}); do
+                            last_char=$(${TMUX_CMD} capture-pane -p | grep -v ^$ | tail -1 | sed 's/[ ]\+[^ ]\+\]$//' | sed 's/[ ]\+$//' | rev | cut -c 1)
+                            if [ "$last_char_rec1" == "$last_char" ] && [ "$last_char_rec2" == "$last_char" ]  ; then
+                                case "$last_char" in
+                                    "$" | "#" | ">" | "%" | ":" ) break ;;
+                                    * ) ;;
+                                esac
+                            fi
+                            last_char_rec2=$last_char_rec1
+                            last_char_rec1=$last_char
+                            sleep ${wait_prompt_interval_sec}
+                        done
 
+                        ${TMUX_CMD} send-keys "eval \"$(echo ${cmd} | sed "s|\${window}|$window|g" | sed "s|\${file}|$init_act_file|g" )\"" C-m
+                    else
                         ${TMUX_CMD} send-keys "eval \"$(echo ${cmd} | sed "s|\${window}|$window|g" | sed "s|\${file}|$init_act_file|g" )\"" C-m
                     fi
 
@@ -365,31 +369,30 @@ cat ${load_file_tmp} | while read line; do
 
                         if [[ ${cmd} =~ ^(sleep|usleep) ]]; then
                             ${cmd}
-                        else
-                            # If ssh* command was executed immediately before,
-                            # wait Prompt ($,#,>,:) before next send-keys (Max 10 sec)
-                            case "$(cat ${pane_cmd_prev_file} 2>/dev/null)" in
-                                ssh* )
-                                    last_char_rec1=
-                                    last_char_rec2=
-                                    for i in {1..50}; do
-                                        last_char=$(${TMUX_CMD} capture-pane -p | grep -v ^$ | tail -1 | sed 's/[ ]\+[^ ]\+\]$//' | sed 's/[ ]\+$//' | rev | cut -c 1)
-                                        if [ "$last_char_rec1" == "$last_char" ] && [ "$last_char_rec2" == "$last_char" ]  ; then
-                                            case "$last_char" in
-                                                "$" | "#" | ">" | ":" ) break ;;
-                                                * ) ;;
-                                            esac
-                                        fi
-                                        last_char_rec2=$last_char_rec1
-                                        last_char_rec1=$last_char
-                                        sleep 0.1
-                                    done
-                                    ;;
-                                * ) ;;
-                            esac
+                        elif [ "${cmd}" == "${wait_prompt_keyword}" ]; then
+                            :
+                        elif [ "$(cat ${pane_cmd_prev_file} 2>/dev/null)" == "${wait_prompt_keyword}" ]; then
+                            # If "wait_prompt" was set to command immediately before,
+                            # wait Prompt ($,#,>,:) before next send-keys
+                            echo "$(LANG=C date +"%Y-%m-%d %H:%M:%S") $(hostname -s) tmux-agent: pane[$pane] waiting prompt .." >&2
+                            last_char_rec1=
+                            last_char_rec2=
+                            for i in $(seq 1 ${wait_prompt_loop_num}); do
+                                last_char=$(${TMUX_CMD} capture-pane -p | grep -v ^$ | tail -1 | sed 's/[ ]\+[^ ]\+\]$//' | sed 's/[ ]\+$//' | rev | cut -c 1)
+                                if [ "$last_char_rec1" == "$last_char" ] && [ "$last_char_rec2" == "$last_char" ]  ; then
+                                    case "$last_char" in
+                                        "$" | "#" | ">" | "%" | ":" ) break ;;
+                                        * ) ;;
+                                    esac
+                                fi
+                                last_char_rec2=$last_char_rec1
+                                last_char_rec1=$last_char
+                                sleep ${wait_prompt_interval_sec}
+                            done
 
                             ${TMUX_CMD} send-keys "eval \"$(echo ${cmd} | sed "s|\${pane}|$pane|g" | sed "s|\${window}|$window|g" | sed "s|\${file}|$init_act_file|g" )\"" C-m
-
+                        else
+                            ${TMUX_CMD} send-keys "eval \"$(echo ${cmd} | sed "s|\${pane}|$pane|g" | sed "s|\${window}|$window|g" | sed "s|\${file}|$init_act_file|g" )\"" C-m
                         fi
 
                         echo ${cmd} > ${pane_cmd_prev_file}
