@@ -262,16 +262,21 @@ File Format
 
         $ tmux list-window -a -F "#S: #W: #{window_layout}"
 
-        session: window: 77cf,80x24,0,0{54x24,0,0[54x16,0,0,828,54x7,0,17,830],25x24,55,0,829}
+        session: window: c2fa,81x19,0,0[81x9,0,0{38x9,0,0,0,42x9,39,0,3},81x9,0,10,1]
 
-  `77cf,80x24,0,0{...` -- `..,55,0,829}` is available as a layout. For example,
+  `c2fa,81x19,0,0[81x9,0,0{...` -- `..,81x9,0,10,1]` is available as a layout. For example,
 
       # file: custom-layout
       session:
-        pane-layout: 77cf,80x24,0,0{54x24,0,0[54x16,0,0,828,54x7,0,17,830],25x24,55,0,829}
-        pane: {0..2}
+        pane-command: ssh web
+        pane: web
+        pane-command: ssh ap
+        pane: ap
+        pane-command: ssh db
+        pane-layout: c2fa,81x19,0,0[81x9,0,0{38x9,0,0,0,42x9,39,0,3},81x9,0,10,1]
+        pane: db
 
-  ![custom-layout Appearance Image](images/custom-layout.png "custom-layout Appearance Image")
+  ![custom-layout Appearance Image](images/custom-layout2.png "custom-layout Appearance Image")
 
 ### Variables
 
@@ -329,8 +334,37 @@ Indents are ignored. Indents in above examples are inserted for readability only
 
 Blank lines are ignored. 
 
+### Special Keyword "wait_prompt"
 
-### Some commands that are treated specially
+If **wait_prompt** keyword is specified in **window-command** or **pane-command**, execution of the next command will wait until a character used for prompt (`$`, `#`, `>`, `%`, `:`) is displayed.
+
+**wait_prompt** is usefull for execution of command after remote server login.
+
+Since "send-keys" of tmux sends a character string without waiting for a response from the command, a command string expected to be executed after login when ssh login takes time will be entered before login. 
+
+By using "wait_prompt", it prevents the command which is expected to be executed after login from being entered during login.
+
+Without **wait_prompt**, "tail" command may not be executed after login.
+
+    # file: 
+    session:
+      pane-command: ssh ${argv}.remote.remote.remote.example.com
+      pane-command: tail -f /var/log/nginx/access.log
+      pane: web{01..10}
+
+With **wait_prompt**, "tail" command is executed after login.
+
+    # file: 
+    session:
+      pane-command: ssh ${argv}.remote.remote.remote.example.com
+      pane-command: wait_prompt
+      pane-command: tail -f /var/log/nginx/access.log
+      pane: web{01..10}
+
+Note: "wait_prompt" takes less than 1 second to execute the next command, so it takes time to complete initial actions. 
+
+
+### sleep and usleep commands are treated specially
 
 Commands specified in **window-command** and **pane-command** are executed continuously without waiting a previous command's return code. So, if first command takes a long time, next command may not work as expected.
 
@@ -340,7 +374,7 @@ An example is as follows. If ssh login is finished within 3 seconds, tail comman
 
     # file: 
     session: 
-      pane-command: ssh poor-nw-remote-server
+      pane-command: ssh poor-nw-remote-server.example.com
       pane-command: sleep 3
       pane-command: tail -f /var/log/httpd/access_log
       pane: 
@@ -377,8 +411,8 @@ Comparison with tmuxinator
 Test Environment
 ----------
 
-- Tmux: **2.3**
+- Tmux: **2.7**
 
 - OS, bash
-    - OS: **Mac OS X 10.11.6 (El Capitan)**, bash: **GNU bash, version 3.2.57(1)-release**
-    - OS: **CentOS 7.2**, bash: **GNU bash, 4.2.46(1)-release**
+    - OS: **Mac OS X 10.12.6 (macOS Sierra)**, bash: **GNU bash, version 3.2.57(1)-release**
+    - OS: **CentOS 7.4**, bash: **GNU bash, 4.2.46(2)-release**
