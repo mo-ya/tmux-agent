@@ -1,0 +1,8 @@
+session:
+  pane-command: ssh web
+  pane: web
+  pane-command: ssh ap
+  pane: ap
+  pane-command: ssh db
+  pane-layout: c2fa,81x19,0,0[81x9,0,0{38x9,0,0,0,42x9,39,0,3},81x9,0,10,1]
+  pane: db

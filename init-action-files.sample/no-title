@@ -1,2 +1,4 @@
 # file: no-title
 session:
+  pane-sync:
+  pane: ${argv}
