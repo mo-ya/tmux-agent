@@ -15,6 +15,8 @@ tmux-agent - tmux initial action agent
     - [Comment](#comment)
     - [Indentation](#indentation)
     - [Blank line](#blank-line)
+    - [Special Keyword "wait_prompt"](#special-keyword-wait_prompt)
+    - [sleep and usleep commands are treated specially](#sleep-and-usleep-commands-are-treated-specially)
 - [Sample Initial Action Files](#sample-initial-action-files)
 - [Comparison with tmuxinator](#comparison-with-tmuxinator)
 - [Test Environment](#test-environment)
