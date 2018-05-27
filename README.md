@@ -418,3 +418,8 @@ Test Environment
 - OS, bash
     - OS: **Mac OS X 10.12.6 (macOS Sierra)**, bash: **GNU bash, version 3.2.57(1)-release**
     - OS: **CentOS 7.4**, bash: **GNU bash, 4.2.46(2)-release**
+
+Blog
+----------
+
+- https://moya-notes.blogspot.jp/2014/08/tmux-agent.html (JAPANESE)
