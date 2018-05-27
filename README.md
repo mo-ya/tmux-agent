@@ -24,7 +24,7 @@ tmux-agent - tmux initial action agent
 Background
 ----------
 
-**[tmux](http://tmux.sourceforge.net)** is a very useful multifunctional terminal multiplexer.
+**[tmux](https://github.com/tmux/tmux/wiki)** is a very useful multifunctional terminal multiplexer.
 I use tmux habitually, and like tmux's behavior basically. 
 But initial actions that are creations of windows/panes, layouts sets, movements between directories, ssh to remote servers and so on become troublesome as tmux is used for various works.
 
