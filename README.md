@@ -423,3 +423,4 @@ Blog
 ----------
 
 - https://moya-notes.blogspot.jp/2014/08/tmux-agent.html (JAPANESE)
+- https://moya-notes.blogspot.jp/2018/05/tmux-agent-update.html (JAPANESE)
