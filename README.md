@@ -20,6 +20,7 @@ tmux-agent - tmux initial action agent
 - [Sample Initial Action Files](#sample-initial-action-files)
 - [Comparison with tmuxinator](#comparison-with-tmuxinator)
 - [Test Environment](#test-environment)
+- [Blog](#blog)
 
 Background
 ----------
