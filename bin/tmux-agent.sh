@@ -16,8 +16,8 @@ TMUX_CMD="tmux"
 ########################################
 
 ##### Internal Variables #####
-VERSION="1.9"
-UPDATE="2018-05-24"
+VERSION="1.10"
+UPDATE="2018-05-29"
 
 ##### Functions #####
 help(){
@@ -228,7 +228,7 @@ cat ${load_file_tmp} | while read line; do
             ;;
         window-command:*)
             session_already_load_check
-            window_command="$(echo $line | sed 's/"/\\\\"/g' | sed 's|^window-command: *||g')"
+            window_command="$(echo $line | sed 's/"/\\\\"/g' | sed 's/\$\([A-Za-z]\)/\\\\$\1/g' | sed 's/\${\([A-Za-z]\)/\\\\${\1/g' | sed 's|^window-command: *||g')"
             #echo $window_command | tr ';' '\n' > $window_cmd_file
             echo $window_command >> $window_cmd_file
             ;;
@@ -304,7 +304,7 @@ cat ${load_file_tmp} | while read line; do
             ;;
         pane-command:*)
             session_already_load_check
-            pane_command="$(echo $line | sed 's/"/\\\\"/g' | sed 's|^pane-command: *||g')"
+            pane_command="$(echo $line | sed 's/"/\\\\"/g' | sed 's/\$\([A-Za-z]\)/\\\\$\1/g' | sed 's/\${\([A-Za-z]\)/\\\\${\1/g' | sed 's|^pane-command: *||g')"
             #echo $pane_command | tr ';' '\n'  > $pane_cmd_file
             echo $pane_command >> $pane_cmd_file
             ;;
