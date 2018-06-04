@@ -228,7 +228,7 @@ cat ${load_file_tmp} | while read line; do
             ;;
         window-command:*)
             session_already_load_check
-            window_command="$(echo $line | sed 's/"/\\\\"/g' | sed 's/\$\([A-Za-z]\)/\\\\$\1/g' | sed 's/\${\([A-Za-z]\)/\\\\${\1/g' | sed 's|^window-command: *||g')"
+            window_command="$(echo $line | sed 's/"/\\\\"/g' | sed 's|^window-command: *||g')"
             #echo $window_command | tr ';' '\n' > $window_cmd_file
             echo $window_command >> $window_cmd_file
             ;;
@@ -289,9 +289,9 @@ cat ${load_file_tmp} | while read line; do
                             sleep ${wait_prompt_interval_sec}
                         done
 
-                        ${TMUX_CMD} send-keys "eval \"$(echo ${cmd} | sed "s|\${window}|$window|g" | sed "s|\${file}|$init_act_file|g" )\"" C-m
+                        ${TMUX_CMD} send-keys "eval \"$(echo ${cmd} | sed "s|\${window}|$window|g" | sed "s|\${file}|$init_act_file|g" | sed 's/\$\([A-Za-z]\)/\\$\1/g' | sed 's/\${\([A-Za-z]\)/\\${\1/g' )\"" C-m
                     else
-                        ${TMUX_CMD} send-keys "eval \"$(echo ${cmd} | sed "s|\${window}|$window|g" | sed "s|\${file}|$init_act_file|g" )\"" C-m
+                        ${TMUX_CMD} send-keys "eval \"$(echo ${cmd} | sed "s|\${window}|$window|g" | sed "s|\${file}|$init_act_file|g" | sed 's/\$\([A-Za-z]\)/\\$\1/g' | sed 's/\${\([A-Za-z]\)/\\${\1/g' )\"" C-m
                     fi
 
                     echo ${cmd} > ${window_cmd_prev_file}
@@ -304,7 +304,7 @@ cat ${load_file_tmp} | while read line; do
             ;;
         pane-command:*)
             session_already_load_check
-            pane_command="$(echo $line | sed 's/"/\\\\"/g' | sed 's/\$\([A-Za-z]\)/\\\\$\1/g' | sed 's/\${\([A-Za-z]\)/\\\\${\1/g' | sed 's|^pane-command: *||g')"
+            pane_command="$(echo $line | sed 's/"/\\\\"/g' | sed 's|^pane-command: *||g')"
             #echo $pane_command | tr ';' '\n'  > $pane_cmd_file
             echo $pane_command >> $pane_cmd_file
             ;;
@@ -390,9 +390,9 @@ cat ${load_file_tmp} | while read line; do
                                 sleep ${wait_prompt_interval_sec}
                             done
 
-                            ${TMUX_CMD} send-keys "eval \"$(echo ${cmd} | sed "s|\${pane}|$pane|g" | sed "s|\${window}|$window|g" | sed "s|\${file}|$init_act_file|g" )\"" C-m
+                            ${TMUX_CMD} send-keys "eval \"$(echo ${cmd} | sed "s|\${pane}|$pane|g" | sed "s|\${window}|$window|g" | sed "s|\${file}|$init_act_file|g" | sed 's/\$\([A-Za-z]\)/\\$\1/g' | sed 's/\${\([A-Za-z]\)/\\${\1/g' )\"" C-m
                         else
-                            ${TMUX_CMD} send-keys "eval \"$(echo ${cmd} | sed "s|\${pane}|$pane|g" | sed "s|\${window}|$window|g" | sed "s|\${file}|$init_act_file|g" )\"" C-m
+                            ${TMUX_CMD} send-keys "eval \"$(echo ${cmd} | sed "s|\${pane}|$pane|g" | sed "s|\${window}|$window|g" | sed "s|\${file}|$init_act_file|g" | sed 's/\$\([A-Za-z]\)/\\$\1/g' | sed 's/\${\([A-Za-z]\)/\\${\1/g' )\"" C-m
                         fi
 
                         echo ${cmd} > ${pane_cmd_prev_file}
