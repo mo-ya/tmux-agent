@@ -16,8 +16,8 @@ TMUX_CMD="tmux"
 ########################################
 
 ##### Internal Variables #####
-VERSION="1.10"
-UPDATE="2018-05-29"
+VERSION="1.11"
+UPDATE="2018-06-04"
 
 ##### Functions #####
 help(){
