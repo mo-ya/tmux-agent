@@ -414,10 +414,10 @@ Comparison with tmuxinator
 Test Environment
 ----------
 
-- Tmux: **2.7**
+- Tmux: **3.1b**
 
 - OS, bash
-    - OS: **Mac OS X 10.12.6 (macOS Sierra)**, bash: **GNU bash, version 3.2.57(1)-release**
+    - OS: **Mac OS X 10.15.6 (macOS Catalina)**, bash: **GNU bash, version 3.2.57(1)-release**
     - OS: **CentOS 7.4**, bash: **GNU bash, 4.2.46(2)-release**
 
 Blog
