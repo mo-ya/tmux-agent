@@ -1,6 +1,6 @@
 #!/bin/bash
 ##
-## Copyright (C) 2018 Y.Morikawa <http://moya-notes.blogspot.jp/>
+## Copyright (C) 2020 Y.Morikawa <http://moya-notes.blogspot.jp/>
 ##
 ## License: MIT License  (See LICENSE.md)
 ##
@@ -16,8 +16,8 @@ TMUX_CMD="tmux"
 ########################################
 
 ##### Internal Variables #####
-VERSION="1.11"
-UPDATE="2018-06-04"
+VERSION="1.12"
+UPDATE="2020-08-13"
 
 ##### Functions #####
 help(){
@@ -183,7 +183,7 @@ echo 0 > ${status_left_length_file}
 echo 0 > ${window_base_index_file}
 echo 0 > ${window_increment_num_file}
 
-cat ${load_file_tmp} | while read line; do
+cat ${load_file_tmp} | sed 's|\\|\\\\|g' | while read line; do
 
     if [[ "$line" =~ ^# ]]; then
         continue
@@ -228,7 +228,7 @@ cat ${load_file_tmp} | while read line; do
             ;;
         window-command:*)
             session_already_load_check
-            window_command="$(echo $line | sed 's/"/\\\\"/g' | sed 's|^window-command: *||g')"
+            window_command="$(echo $line | sed 's|\\|\\\\|g' | sed 's/"/\\\\"/g' | sed 's|^window-command: *||g')"
             #echo $window_command | tr ';' '\n' > $window_cmd_file
             echo $window_command >> $window_cmd_file
             ;;
@@ -304,7 +304,7 @@ cat ${load_file_tmp} | while read line; do
             ;;
         pane-command:*)
             session_already_load_check
-            pane_command="$(echo $line | sed 's/"/\\\\"/g' | sed 's|^pane-command: *||g')"
+            pane_command="$(echo $line | sed 's|\\|\\\\|g' | sed 's/"/\\\\"/g' | sed 's|^pane-command: *||g')"
             #echo $pane_command | tr ';' '\n'  > $pane_cmd_file
             echo $pane_command >> $pane_cmd_file
             ;;
